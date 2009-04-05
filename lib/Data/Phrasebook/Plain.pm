@@ -4,7 +4,7 @@ use warnings FATAL => 'all';
 use base qw( Data::Phrasebook::Generic Data::Phrasebook::Debug );
 use Carp qw( croak );
 
-our $VERSION = '0.29';
+my $VERSION = '0.30';
 
 =head1 NAME
 
@@ -31,14 +31,14 @@ Data::Phrasebook::Plain - The Simple Phrasebook Model.
 
 =head1 DESCRIPTION
 
-This module is the fallback or default phrasebook class. It doesn't do much 
+This module is the fallback or default phrasebook class. It doesn't do much
 except act as a very simple templating facility.
 
 =head1 METHODS
 
 =head2 fetch
 
-Retrieves the specified C<template> and substitutes any C<keywords> for 
+Retrieves the specified C<template> and substitutes any C<keywords> for
 C<values>.
 
 Thus, given:
@@ -90,7 +90,7 @@ __END__
 
 =head1 SEE ALSO
 
-L<Data::Phrasebook>, 
+L<Data::Phrasebook>,
 L<Data::Phrasebook::Generic>.
 
 =head1 SUPPORT

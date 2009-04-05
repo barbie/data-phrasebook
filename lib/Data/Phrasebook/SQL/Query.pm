@@ -5,7 +5,7 @@ use base qw( Data::Phrasebook::Debug );
 use vars qw( $AUTOLOAD );
 use Carp qw( croak );
 
-our $VERSION = '0.29';
+my $VERSION = '0.30';
 
 =head1 NAME
 
@@ -25,7 +25,7 @@ each query requested.
 
 =head2 new
 
-Not to be accessed directly, but via the parent L<Data::Phrasebook>, by 
+Not to be accessed directly, but via the parent L<Data::Phrasebook>, by
 specifying the class as SQL.
 
 =head1 METHODS
@@ -251,7 +251,7 @@ __END__
 
 =head1 SEE ALSO
 
-L<Data::Phrasebook>, 
+L<Data::Phrasebook>,
 L<Data::Phrasebook::SQL>.
 
 =head1 SUPPORT

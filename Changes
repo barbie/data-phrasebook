@@ -1,5 +1,9 @@
 # Changes log for Data::Phrasebook
 
+0.30    current
+	- removed 5.006 dependency
+	- upgrade to Test::CPAN::Meta.
+
 0.29    02/03/2007
 	- RT#25089 - if delimiters are set via new(), the default settings no
 	  longer reset in Generic.pm. (Thanks to Javier Gonzalez).

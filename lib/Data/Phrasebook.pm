@@ -4,7 +4,7 @@ use warnings FATAL => 'all';
 use base qw( Data::Phrasebook::Debug );
 use Carp qw( croak );
 
-our $VERSION = '0.29';
+my $VERSION = '0.30';
 
 =head1 NAME
 
@@ -64,7 +64,7 @@ keyword.
 
 The SQL class allows specific database handling. Phrases are retrieved via the
 query() method. The query() method internally retrieves the SQL phrase, then
-returns the statement handler object, which the user can then perform a 
+returns the statement handler object, which the user can then perform a
 prepare/execute/fetch/finish sequence on. For more details see
 Data::Phrasebook::SQL.
 
@@ -172,7 +172,7 @@ as:
   platform=Windows
 
 The phrasebook object is then created and used as:
-  
+
   my $q = Data::Phrasebook->new(
     class  => 'Plain',
     loader => 'Ini',
@@ -201,7 +201,7 @@ file and the dictionary passed are not the ones currently loaded.
 
 =head2 Multiple Dictionaries
 
-As of version 0.25, the ability to provide prescendence over multiple 
+As of version 0.25, the ability to provide prescendence over multiple
 dictionaries for the same phrasebook. Using Data::Phrasebook::Loader::Ini
 again as an example, the phrasebook might be laid out as:
 
@@ -218,7 +218,7 @@ again as an example, the phrasebook might be laid out as:
   platform=Windows
 
 The phrasebook object is then created and used as:
-  
+
   my $q = Data::Phrasebook->new(
     class  => 'Plain',
     loader => 'Ini',
@@ -230,7 +230,7 @@ The phrasebook object is then created and used as:
   my $platform = $q->fetch('platform');	# retrieves 'Windows'
   my $network  = $q->fetch('nework');	# retrieves 'WLAN'
 
-The first dictionary, if not specified and supported by the Loader module, is 
+The first dictionary, if not specified and supported by the Loader module, is
 still used as the default dictionary.
 
 The dictionaries can be specified, or reordered, using the object method:
@@ -241,12 +241,12 @@ A subsequent reload will occur with the next fetch call.
 
 =head1 DEDICATION
 
-Much of the work original class framework is from Iain's original code. My 
-code was alot simpler and was tied to using just an INI data source. Merging 
+Much of the work original class framework is from Iain's original code. My
+code was alot simpler and was tied to using just an INI data source. Merging
 all the ideas and code together we came up with this distribution.
 
 Unfortunately Iain died in December 2003, so he never got to see or play
-with the final working version. I can only thank him for his thoughts and 
+with the final working version. I can only thank him for his thoughts and
 ideas in getting this distribution into a state worthy of release.
 
   Iain Campbell Truskett (16.07.1979 - 29.12.2003)

@@ -4,7 +4,7 @@ use warnings FATAL => 'all';
 use base qw( Data::Phrasebook::Debug );
 use Carp qw( croak );
 
-our $VERSION = '0.29';
+my $VERSION = '0.30';
 
 my $something = 0;
 
@@ -18,7 +18,7 @@ Data::Phrasebook::Loader::Base - Base loader plugin class.
 
 =head1 DESCRIPTION
 
-C<Data::Phrasebook::Loader::Base> acts as a base class for phrasebook 
+C<Data::Phrasebook::Loader::Base> acts as a base class for phrasebook
 plugins.
 
 =head1 CONSTRUCTOR
@@ -96,7 +96,7 @@ Please see the README file.
 
   Copyright (C) 2004-2007 Barbie for Miss Barbell Productions.
 
-  This module is free software; you can redistribute it and/or 
+  This module is free software; you can redistribute it and/or
   modify it under the same terms as Perl itself.
 
 The full text of the licenses can be found in the F<Artistic> and

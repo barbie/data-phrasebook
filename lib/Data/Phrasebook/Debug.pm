@@ -3,7 +3,7 @@ use strict;
 use warnings FATAL => 'all';
 use Carp qw( croak );
 
-our $VERSION = '0.29';
+my $VERSION = '0.30';
 
 =head1 NAME
 
@@ -44,7 +44,7 @@ are several different levels of debugging, detailed as follows:
 
 The first three are simple strings that are recorded during the processing.
 However, the latter is specifically for dumping the contents of significant
-variables. 
+variables.
 
 Through the use of the debug() method, the debugging can be switched on and
 off at significant points. The clear() method will clear the current trail of
@@ -149,7 +149,7 @@ Please see the README file.
 
   Copyright (C) 2004-2007 Barbie for Miss Barbell Productions.
 
-  This module is free software; you can redistribute it and/or 
+  This module is free software; you can redistribute it and/or
   modify it under the same terms as Perl itself.
 
 The full text of the licenses can be found in the F<Artistic> and

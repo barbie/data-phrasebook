@@ -6,7 +6,7 @@ WriteMakefile(
         'Module::Pluggable' => '2.7',
         'Test::More'        => '0.47',
     },
-	NO_META			=> 1,
+    NO_META         => 1,
 
     ($] >= 5.005 ?
         (ABSTRACT_FROM  => 'lib/Data/Phrasebook.pm',

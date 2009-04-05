@@ -29,6 +29,7 @@ For testing purposes, the following modules are desireable, but not essential:
   Test::Pod           >= 1.00
   Test::Pod::Coverage >= 0.08
   Pod::Coverage
+  Test::CPAN::Meta    >= 0.12
 
 INSTALLATION
 

@@ -1,5 +1,5 @@
 To see examples for this distribution, it is recommended you read the test 
-scripts included under ./t, which cover basic phrasebooks and SQL phrasebooks.
+scripts included under ./t, which cover the basic usage of the modules.
 
 I may add further examples should the need ever arise. If you have any example
 scripts that use the distribution in an unusual way or make good use of all the
