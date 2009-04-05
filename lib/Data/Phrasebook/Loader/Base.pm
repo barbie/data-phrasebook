@@ -4,7 +4,7 @@ use warnings FATAL => 'all';
 use base qw( Data::Phrasebook::Debug );
 use Carp qw( croak );
 
-our $VERSION = '0.28';
+our $VERSION = '0.29';
 
 my $something = 0;
 
@@ -95,7 +95,6 @@ Please see the README file.
 =head1 COPYRIGHT AND LICENSE
 
   Copyright (C) 2004-2007 Barbie for Miss Barbell Productions.
-  All Rights Reserved.
 
   This module is free software; you can redistribute it and/or 
   modify it under the same terms as Perl itself.

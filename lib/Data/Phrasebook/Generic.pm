@@ -5,7 +5,7 @@ use Data::Phrasebook::Loader;
 use base qw( Data::Phrasebook::Debug );
 use Carp qw( croak );
 
-our $VERSION = '0.28';
+our $VERSION = '0.29';
 
 =head1 NAME
 
@@ -56,11 +56,14 @@ sub new {
 	}
 
 	my $self = bless {}, $class;
+
+    # set default delimiters, in case custom delimiters 
+    # are provided in the hash
+    $self->{delimiters} = qr{ :(\w+) }x;
+
     foreach (keys %hash) {
         $self->$_($hash{$_});
     }
-#   $self->{delimiters} = qr{ \[% \s* (\w+) \s* %\] }x;
-    $self->{delimiters} = qr{ :(\w+) }x;
 
     return $self;
 }
@@ -316,9 +319,8 @@ Please see the README file.
 
 =head1 COPYRIGHT AND LICENSE
 
-  Copyright (C) 2003 Iain Truskett. All rights reserved.
+  Copyright (C) 2003 Iain Truskett.
   Copyright (C) 2004-2007 Barbie for Miss Barbell Productions.
-  All Rights Reserved.
 
   This library is free software; you can redistribute it and/or modify
   it under the same terms as Perl itself.

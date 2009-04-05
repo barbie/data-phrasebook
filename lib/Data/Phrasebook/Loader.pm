@@ -6,7 +6,7 @@ use Carp qw( croak );
 
 use Module::Pluggable   search_path => ['Data::Phrasebook::Loader'];
 
-our $VERSION = '0.28';
+our $VERSION = '0.29';
 
 =head1 NAME
 
@@ -96,9 +96,8 @@ Please see the README file.
 
 =head1 COPYRIGHT AND LICENSE
 
-  Copyright (C) 2003 Iain Truskett. All rights reserved.
+  Copyright (C) 2003 Iain Truskett.
   Copyright (C) 2004-2007 Barbie for Miss Barbell Productions.
-  All Rights Reserved.
 
   This library is free software; you can redistribute it and/or modify
   it under the same terms as Perl itself.
