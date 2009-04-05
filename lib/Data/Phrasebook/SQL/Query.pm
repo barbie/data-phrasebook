@@ -5,7 +5,7 @@ use base qw( Data::Phrasebook::Debug );
 use vars qw( $AUTOLOAD );
 use Carp qw( croak );
 
-our $VERSION = '0.22';
+our $VERSION = '0.23';
 
 =head1 NAME
 
@@ -234,7 +234,7 @@ sub AUTOLOAD
     if ($sth->can($method))
     {
         no strict 'refs';
-        my $execute = $method =~ /^fetch/ ? 0 : 0 ;
+        my $execute = $method =~ /^fetch/ ? 1 : 0 ;
         *{$method} = sub {
                 my $s = shift;
                 $s->_call_other( $execute, $method, @_ )

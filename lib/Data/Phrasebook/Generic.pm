@@ -5,7 +5,7 @@ use Data::Phrasebook::Loader;
 use base qw( Data::Phrasebook::Debug );
 use Carp qw( croak );
 
-our $VERSION = '0.22';
+our $VERSION = '0.23';
 
 =head1 NAME
 
@@ -135,25 +135,87 @@ sub dict {
 
 =head2 dicts
 
-Returns the dictionaries available.
+Having instantiated the C<Data::Phrasebook> object class, and using the C<file>
+attribute as a directory path, the object can return a list of the current
+dictionaries available (provided the plugin supports it) as:
+
+  my $pb = Data::Phrasebook->new(
+  	loader => 'Text',
+	file   => '/tmp/phrasebooks',
+  );
+
+  my @dicts = $pb->dicts;
+
+or
+
+  my @dicts = $pb->dicts( $path );
 
 =cut 
 
 sub dicts {
     my $self = shift;
+
     my $loader = $self->loaded;
     if(!defined $loader) {
         if($self->debug) {
             $self->store(4,"->dicts loader=[".($self->loader||'undef')."]");
         }
-        $loader = Data::Phrasebook::Loader->new('class' => $self->loader);
+        $loader = Data::Phrasebook::Loader->new(
+            'class' => $self->loader,
+            'parent' => $self,
+        );
     }
 
     # just in case it doesn't use D::P::Loader::Base
     croak("dicts() unsupported in plugin")
     	unless($loader->can("dicts"));
 
-    $loader->dicts($self->file);
+    $loader->dicts(@_);
+}
+
+=head2 keywords
+
+Having instantiated the C<Data::Phrasebook> object class, using the C<dict>
+attribute as required, the object can return a list of the current keywords 
+available (provided the plugin supports it) as:
+
+  my $pb = Data::Phrasebook->new(
+  	loader => 'Text',
+	file   => '/tmp/phrasebooks',
+	dict   => 'TEST',
+  );
+
+  my @keywords = $pb->keywords;
+
+Note the list returned will be a combination of the default and any named
+dictionary.
+
+  my @keywords = $pb->keywords( $dict );
+
+Specifying a dictionary may not be supported by all plugins. See the 
+appropriate loader plugin for further details.
+
+=cut 
+
+sub keywords {
+    my $self = shift;
+
+    my $loader = $self->loaded;
+    if(!defined $loader) {
+        if($self->debug) {
+            $self->store(4,"->keywords loader=[".($self->loader||'undef')."]");
+        }
+        $loader = Data::Phrasebook::Loader->new(
+            'class' => $self->loader,
+            'parent' => $self,
+        );
+    }
+
+    # just in case it doesn't use D::P::Loader::Base
+    croak("keywords() unsupported in plugin")
+    	unless($loader->can("keywords"));
+
+    $loader->keywords(@_);
 }
 
 =head2 data
@@ -182,7 +244,10 @@ sub data
             $self->store(4,"->data file=[".($self->file||'undef')."]");
             $self->store(4,"->data dict=[".($self->dict||'undef')."]");
         }
-        $loader = Data::Phrasebook::Loader->new('class' => $self->loader);
+        $loader = Data::Phrasebook::Loader->new(
+            'class' => $self->loader,
+            'parent' => $self,
+        );
         $loader->load( $self->file, $self->dict );
         $self->loaded($loader);
     }

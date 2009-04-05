@@ -1,5 +1,9 @@
 # Changes log for Data::Phrasebook
 
+0.23    09 Aug 2005
+	- Fixed fetch/execute code in Query.pm (Tielman De Villiers)
+	- provide support for returning the list of keywords available.
+
 0.22    13 Jun 2005
 	- POD suggestions (Jon Allen).
 	- delimiters now a generic class behaviour.

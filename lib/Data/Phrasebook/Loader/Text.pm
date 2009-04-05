@@ -4,7 +4,7 @@ use warnings FATAL => 'all';
 use base qw( Data::Phrasebook::Loader::Base Data::Phrasebook::Debug );
 use Carp qw( croak );
 
-our $VERSION = '0.22';
+our $VERSION = '0.23';
 
 =head1 NAME
 
@@ -85,13 +85,14 @@ sub load {
     my ($class, $file, $dict) = @_;
     $class->store(3,"->load IN");
 
-    $file ||= $class->{file};
-    $dict ||= $class->{dict};
+    $file ||= $class->{parent}->file;
+    $dict ||= $class->{parent}->dict;
     croak "No file given as argument!" unless defined $file;
 
     $file = "$file/$dict"	if(-d $file && defined $dict);
     croak "File [$file] not accessible!" unless -f $file && -r $file;
 
+    %phrasebook = ();   # ignore previous dictionary
     open BOOK, $file    or return undef;
     while(<BOOK>) {
         my ($name,$value) = (/(.*?)=(.*)/);
@@ -121,7 +122,7 @@ sub get {
 =head2 dicts
 
 Having instantiated the C<Data::Phrasebook> object class, and using the C<file>
-attribute as a directory path. The object can return a list of the current
+attribute as a directory path, the object can return a list of the current
 dictionaries available as:
 
   my $pb = Data::Phrasebook->new(
@@ -139,11 +140,56 @@ or
 
 sub dicts {
     my ($self,$path) = @_;
-    $path ||= $self->{file};
+    $path ||= $self->{parent}->file;
     return ()	unless(-d $path && -r $path);
 
     my @files = map { s/$path.//;$_ } grep {/^[^\.]+/} glob("$path/*");
     return @files;
+}
+
+=head2 keywords
+
+Having instantiated the C<Data::Phrasebook> object class, using the C<file>
+and C<dict> attributes as required, the object can return a list of the 
+current keywords available as:
+
+  my $pb = Data::Phrasebook->new(
+  	loader => 'Text',
+	file   => '/tmp/phrasebooks',
+	dict   => 'TEST',
+  );
+
+  my @keywords = $pb->keywords;
+
+Note the list returned will be a combination of the default and any named
+dictionary.
+
+  my @keywords = $pb->keywords( $dict );
+
+Note that $dict can be the full path or the file name for the current phrase
+directory.
+
+=cut
+
+sub keywords {
+    return keys %phrasebook if(@_ == 1);
+
+    my ($self,$file,$dict) = @_;
+    $file ||= $self->{parent}->file;
+    $dict ||= $self->{parent}->dict;
+    croak "No file given as argument!" unless defined $file;
+
+    $file = "$file/$dict"	if(-d $file && defined $dict);
+    croak "File [$file] not accessible!" unless -f $file && -r $file;
+
+    my @keywords;
+    open BOOK, $file    or return undef;
+    while(<BOOK>) {
+        push @keywords, $1   if(/(.*?)=/ && $1);
+    }
+    close BOOK;
+
+    return @keywords;
 }
 
 1;

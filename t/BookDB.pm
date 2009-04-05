@@ -107,6 +107,7 @@ sub execute {
 			$dbh->{hash} = \@list;
 		}
 	}
+    $dbh->{Active} = 1;
 }
 sub fetchrow_hashref {
 	return shift @{$dbh->{hash}}}
@@ -114,7 +115,11 @@ sub fetchall_arrayref {
 	return \@{$dbh->{array}}}
 sub fetchrow_array {
 	return (7)}
-sub finish { $dbh->{sql} = undef }
+
+sub finish { 
+    $dbh->{Active} = 0;
+    $dbh->{sql} = undef;
+}
 
 sub can { 1 }
 

@@ -4,7 +4,7 @@ use warnings FATAL => 'all';
 use base qw( Data::Phrasebook::Debug );
 use Carp qw( croak );
 
-our $VERSION = '0.22';
+our $VERSION = '0.23';
 
 =head1 NAME
 
@@ -40,6 +40,11 @@ in your subclass. Gets the phrase.
 C<dicts> is an abstract method here. You must define your own
 in your subclass. Returns the list of dictionaries available.
 
+=head2 keywords
+
+C<keywords> is an abstract method here. You must define your own
+in your subclass. Returns the list of keywords available.
+
 =head1 CONSTRUCTOR
 
 =head2 new
@@ -58,9 +63,10 @@ sub new {
     return $atts;
 }
 
-sub load  { return undef }
-sub get   { return undef }
-sub dicts { return () }
+sub load     { return undef }
+sub get      { return undef }
+sub dicts    { return () }
+sub keywords { return () }
 
 1;
 

@@ -3,7 +3,7 @@ use strict;
 use lib 't';
 use vars qw( $class );
 
-use Test::More tests => 4;
+use Test::More tests => 7;
 use Data::Phrasebook;
 
 my $file = 't/02dict.ini';
@@ -23,3 +23,17 @@ is($book->fetch('foo'), "this is English");
 # now switch to the second one
 $book->dict('german.txt');
 is($book->fetch('foo'), "diese ist Deutsche");
+
+# what are the current keywords?
+my @tkeys = qw( baz foo );
+my @keywords = $book->keywords();
+is_deeply(\@keywords,\@tkeys);
+
+# what are the keywords in the first dictionary?
+@tkeys = qw( foo bar );
+@keywords = $book->keywords('t/phrases/english.txt');
+is_deeply(\@keywords,\@tkeys);
+
+# do we still have the second one loaded?
+is($book->fetch('foo'), "diese ist Deutsche");
+
