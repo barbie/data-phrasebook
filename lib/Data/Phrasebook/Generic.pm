@@ -5,7 +5,7 @@ use Data::Phrasebook::Loader;
 use base qw( Data::Phrasebook::Debug );
 use Carp qw( croak );
 
-our $VERSION = '0.19';
+our $VERSION = '0.21';
 
 =head1 NAME
 
@@ -46,12 +46,12 @@ B<this> class.
 
 sub new {
     my $class = shift;
-	my %hash = @_;
-	$class->store(3,"$class->new IN");
-	my $atts = \%hash;
-	$class->store(4,"$class->new args=[".$class->dumper($atts)."]");
-	bless $atts, $class;
-	return $atts;
+    my %hash = @_;
+    $class->store(3,"$class->new IN");
+    my $atts = \%hash;
+    $class->store(4,"$class->new args=[".$class->dumper($atts)."]");
+    bless $atts, $class;
+    return $atts;
 }
 
 =head1 METHODS
@@ -60,6 +60,15 @@ sub new {
 
 Set, or get, the loader class. Uses a default if none have been
 specified. See L<Data::Phrasebook::Loader>.
+
+=head2 unload
+
+Called by the file() and dict() methods when a fresh file or dictionary is
+specified, and reloading is required.
+
+=head2 loaded
+
+Accessor to determine whether the current dictionary has been loaded
 
 =head2 file
 
@@ -76,10 +85,6 @@ That is, which loader you use determines what your C<file> looks like.
 
 The default loader takes just an ordinary filename.
 
-=head2 loaded
-
-Accessor to determine whether the current dictionary has been loaded
-
 =head2 dict
 
 Accessor to store the dictionary to be used.
@@ -87,20 +92,41 @@ Accessor to store the dictionary to be used.
 =cut
 
 sub loader {
-	my $self = shift;
-	@_ ? $self->{loader} = shift : $self->{loader};
+    my $self = shift;
+    @_ ? $self->{loader} = shift : $self->{loader};
+}
+sub unload {
+    my $self = shift;
+    $self->{loaded} = undef;
+        $self->{'loaded-data'} = undef;
+}
+
+sub loaded {
+    my $self = shift;
+    @_ ? $self->{loaded} = shift : $self->{loaded};
 }
 sub file {
-	my $self = shift;
-	@_ ? $self->{file} = shift : $self->{file};
-}
-sub loaded {
-	my $self = shift;
-	@_ ? $self->{loaded} = shift : $self->{loaded};
+    my $self = shift;
+    if(@_) {
+        my $file = shift;
+        if(!$self->{file} || $file ne $self->{file}) {
+            $self->unload();
+            $self->{file} = $file;
+        }
+    }
+    $self->{file};
 }
 sub dict {
-	my $self = shift;
-	@_ ? $self->{dict} = shift : $self->{dict};
+    my $self = shift;
+    if(@_) {
+        my $dict = shift;
+        if(!$self->{dict} || $dict ne $self->{dict}) {
+            $self->unload();
+            $self->{dict} = $dict;
+        }
+    }
+
+    $self->{dict};
 }
 
 =head2 data
@@ -117,22 +143,22 @@ This is typically only used internally by implementations, not the end user.
 sub data
 {
     my $self = shift;
-	my $id = shift;
-	$self->store(3,"->data IN");
-	$self->store(4,"->data id=[$id]");
-	return	unless($id);
+    my $id = shift;
+    $self->store(3,"->data IN");
+    $self->store(4,"->data id=[$id]");
+    return  unless($id);
 
     my $loader = $self->loaded;
-	if(!defined $loader) {
-		if($self->debug) {
-			$self->store(4,"->data loader=[".($self->loader||'undef')."]");
-			$self->store(4,"->data file=[".($self->file||'undef')."]");
-			$self->store(4,"->data dict=[".($self->dict||'undef')."]");
-		}
+    if(!defined $loader) {
+        if($self->debug) {
+            $self->store(4,"->data loader=[".($self->loader||'undef')."]");
+            $self->store(4,"->data file=[".($self->file||'undef')."]");
+            $self->store(4,"->data dict=[".($self->dict||'undef')."]");
+        }
         $loader = Data::Phrasebook::Loader->new('class' => $self->loader);
         $loader->load( $self->file, $self->dict );
-		$self->loaded($loader);
-	}
+        $self->loaded($loader);
+    }
 
     $self->{'loaded-data'}->{$id} ||= do { $loader->get( $id ) };
 }

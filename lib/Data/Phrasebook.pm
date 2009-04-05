@@ -4,7 +4,7 @@ use warnings FATAL => 'all';
 use base qw( Data::Phrasebook::Debug );
 use Carp qw( croak );
 
-our $VERSION = '0.20';
+our $VERSION = '0.21';
 
 =head1 NAME
 
@@ -20,42 +20,17 @@ Data::Phrasebook - Abstract your queries!
         file   => 'phrases.txt',
     );
 
-   $q->delimiters( qr{ \[% \s* (\w+) \s* %\] }x );
-	my $phrase = $q->fetch($keyword);
+    # simple keyword to phrase mapping
+    my $phrase = $q->fetch($keyword);
+
+    # keyword to phrase mapping with parameters
+    $q->delimiters( qr{ \[% \s* (\w+) \s* %\] }x );
+    my $phrase = $q->fetch($keyword,{this => 'that'});
 
 =head1 DESCRIPTION
 
-This is a factory class for accessing phrasebooks.
-
-To explain what phrasebooks are it is worth reading Rani Pinchuk's
-(author of L<Class::Phrasebook>) article of Perl.com:
-
-L<http://www.perl.com/pub/a/2002/10/22/phrasebook.html>
-
-Common uses of phrasebooks are in handling error codes, accessing databases
-via SQL queries and written language phrases. Examples are the mime.types
-file and the hosts file, both of which use a simple phrasebook design.
-
-Unfortunately Class::Phrasebook is a complete work and not a true class
-based framework. If you can't install XML libraries, you cannot use it.
-This distribution is a collaboration between Iain Truskett and myself to
-create an extendable and class based framework for implementing phrasebooks.
-
-Note that if using an implementation that supports dictionaries, they cannot
-be changed once the loader class is instantiated. This may change in the 
-future.
-
-=head1 DEDICATION
-
-Much of the work original class framework is from Iain's original code. My 
-code was alot simpler and was tied to using just an INI data source. Merging 
-all the ideas and code together we came up with this distribution.
-
-Unfortunately Iain died in December 2003, so he never got to see or play
-with the final working version. I can only thank him for his thoughts and 
-ideas in getting this distribution into a state worthy of release.
-
-  Iain Campbell Truskett (16.07.1979 - 29.12.2003)
+Data::Phrasebook is a collection of modules for accessing phrasebooks from
+various data sources.
 
 =head1 CONSTRUCTOR
 
@@ -129,6 +104,91 @@ sub new
 
 __END__
 
+=head1 CLASSES
+
+In creating a phrasebook object, a class type is required. This class defines
+the nature of the phrasebook. Currently there are two classes, Plain and SQL.
+
+The Plain class is the default class, and allows retrieval of phrases via the
+fetch() method. The fetch() simply returns the phrase that maps to the given
+keyword.
+
+The SQL class allows specific database handling. Phrases are retrieved via the
+query() method. The query() method internally retrieves the SQL phrase, then
+returns the statement handler object, which the user can then perform a 
+prepare/execute/fetch/finish sequence on. For more details see
+Data::Phrasebook::SQL.
+
+=head1 DICTIONARIES
+
+Data::Phrasebook supports the use of dictionaries. However, in the Text version
+of phrasebooks they are not support. Other Loader modules available, do support
+dictionaries. Using Data::Phrasebook::Loader::Ini as an example, the dictionary
+might be laid out as:
+
+  [Stuff]
+  language=Perl
+  platform=Linux
+
+  [Nonsense]
+  platform=Windows
+
+The phrasebook object is then created and used as:
+  
+  my $q = Data::Phrasebook->new(
+    class  => 'Plain',
+    loader => 'Ini',
+    file   => 'phrases.ini',
+    dict   => 'Nonsense',
+  );
+
+  my $language = $q->fetch('language');	# retrieves 'Perl'
+  my $platform = $q->fetch('platform');	# retrieves 'Windows'
+
+The former is from the default (first) dictionary, and the second is from the
+named dictionary ('Nonsense'). If a phrase is not found in the named dictionary
+an attempt is made to find it in the default dictionary. Other wise undef will
+be returned.
+
+Once a dictionary or file is specified, changing either requires reloading. As
+this is done at the loader stage, we need to let it know what it needs to
+reload. This can be done with the either (or both) of the following:
+
+  $q->file('phrases2.ini');
+  $q->dict('Stuff');
+
+A subsequent fetch() will then reload the file and dictionary, before
+retrieving the phrase required. However, a reload only takes place if both the
+file and the dictionary passed are not the ones currently loaded.
+
+=head1 PHRASEBOOKS
+
+To explain what phrasebooks are it is worth reading Rani Pinchuk's
+(author of L<Class::Phrasebook>) article on Perl.com:
+
+L<http://www.perl.com/pub/a/2002/10/22/phrasebook.html>
+
+Common uses of phrasebooks are in handling error codes, accessing databases
+via SQL queries and written language phrases. Examples are the mime.types
+file and the hosts file, both of which use a simple phrasebook design.
+
+Unfortunately Class::Phrasebook is a complete work and not a true class
+based framework. If you can't install XML libraries, you cannot use it.
+This distribution is a collaboration between Iain Truskett and myself to
+create an extendable and class based framework for implementing phrasebooks.
+
+=head1 DEDICATION
+
+Much of the work original class framework is from Iain's original code. My 
+code was alot simpler and was tied to using just an INI data source. Merging 
+all the ideas and code together we came up with this distribution.
+
+Unfortunately Iain died in December 2003, so he never got to see or play
+with the final working version. I can only thank him for his thoughts and 
+ideas in getting this distribution into a state worthy of release.
+
+  Iain Campbell Truskett (16.07.1979 - 29.12.2003)
+
 =head1 SEE ALSO
 
 L<Data::Phrasebook::Plain>,
@@ -143,6 +203,14 @@ L<Data::Phrasebook::Loader::Base>.
 =head1 SUPPORT
 
 Please see the README file.
+
+=head1 DSLIP
+
+  b - Beta testing
+  d - Developer
+  p - Perl-only
+  O - Object oriented
+  p - Standard-Perl: user may choose between GPL and Artistic
 
 =head1 AUTHOR
 

@@ -1,11 +1,10 @@
 package Data::Phrasebook::Loader::Base;
 use strict;
-use warnings;# FATAL => 'all';
-#use base qw( Class::WhiteHole Data::Phrasebook::Debug );
+use warnings FATAL => 'all';
 use base qw( Data::Phrasebook::Debug );
 use Carp qw( croak );
 
-our $VERSION = '0.02';
+our $VERSION = '0.21';
 
 =head1 NAME
 
@@ -47,11 +46,11 @@ attributes passed as arguments.
 
 sub new {
     my $self = shift;
-	my %hash = @_;
-	$self->store(3,"$self->new IN");
-	my $atts = \%hash;
-	bless $atts, $self;
-	return $atts;
+    my %hash = @_;
+    $self->store(3,"$self->new IN");
+    my $atts = \%hash;
+    bless $atts, $self;
+    return $atts;
 }
 
 sub load { return undef }

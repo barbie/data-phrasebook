@@ -4,7 +4,7 @@ use warnings FATAL => 'all';
 use base qw( Data::Phrasebook::Loader::Base Data::Phrasebook::Debug );
 use Carp qw( croak );
 
-our $VERSION = '0.04';
+our $VERSION = '0.21';
 
 =head1 NAME
 
@@ -69,15 +69,15 @@ my %phrasebook;
 
 sub load {
     my ($class, $file) = @_;
-	$class->store(3,"->load IN");
+    $class->store(3,"->load IN");
     croak "No file given as argument!" unless defined $file;
 
-	open BOOK, $file	or return undef;
-	while(<BOOK>) {
-		my ($name,$value) = (/(.*?)=(.*)/);
-		$phrasebook{$name} = $value	if($name);	# value can be blank
-	}
-	close BOOK;
+    open BOOK, $file    or return undef;
+    while(<BOOK>) {
+        my ($name,$value) = (/(.*?)=(.*)/);
+        $phrasebook{$name} = $value if($name);  # value can be blank
+    }
+    close BOOK;
 }
 
 =head2 get
@@ -89,13 +89,13 @@ Returns the phrase stored in the phrasebook, for a given keyword.
 =cut
 
 sub get {
-	my ($class, $key) = @_;
-	if($class->debug) {
-		$class->store(3,"->get IN");
-		$class->store(4,"->get key=[$key]");
-		$class->store(4,"->get phrase=[".($phrasebook{$key} || 'undef')."]");
-	}
-	return $phrasebook{$key};
+    my ($class, $key) = @_;
+    if($class->debug) {
+        $class->store(3,"->get IN");
+        $class->store(4,"->get key=[$key]");
+        $class->store(4,"->get phrase=[".($phrasebook{$key} || 'undef')."]");
+    }
+    return $phrasebook{$key};
 }
 
 1;

@@ -4,9 +4,9 @@ use warnings FATAL => 'all';
 use base qw( Data::Phrasebook::Debug );
 use Carp qw( croak );
 
-use Module::Pluggable	search_path => ['Data::Phrasebook::Loader'];
+use Module::Pluggable   search_path => ['Data::Phrasebook::Loader'];
 
-our $VERSION = '0.19';
+our $VERSION = '0.21';
 
 =head1 NAME
 
@@ -46,26 +46,26 @@ sub new
     my %args  = @_;
     my $class = delete $args{class} || $DEFAULT_CLASS;
 
-	$self->store(3,"$self->new IN");
-	$self->store(4,"$self->new class=[$class]");
+    $self->store(3,"$self->new IN");
+    $self->store(4,"$self->new class=[$class]");
 
 # not implemented yet in Module::Pluggable
-#	{
-#		# in the event we have been subclassed
-#		$self->search_path( add => "$self" );
-#	}
+#   {
+#       # in the event we have been subclassed
+#       $self->search_path( add => "$self" );
+#   }
 
-	my $plugin;
-	my @plugins = $self->plugins();
-	for(@plugins) {
-		$plugin = $_	if($_ =~ /\b$class$/);
-	}
+    my $plugin;
+    my @plugins = $self->plugins();
+    for(@plugins) {
+        $plugin = $_    if($_ =~ /\b$class$/);
+    }
 
-	croak("no loader available of that name\n")	unless($plugin);
-	eval "CORE::require $plugin";
-	croak "Couldn't require $plugin : $@" if $@;
-	$self->store(4,"$self->new plugin=[$plugin]");
-	return $plugin->new( %args );
+    croak("no loader available of that name\n") unless($plugin);
+    eval "CORE::require $plugin";
+    croak "Couldn't require $plugin : $@" if $@;
+    $self->store(4,"$self->new plugin=[$plugin]");
+    return $plugin->new( %args );
 }
 
 1;

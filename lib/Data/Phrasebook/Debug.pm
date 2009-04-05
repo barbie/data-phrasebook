@@ -3,7 +3,7 @@ use strict;
 use warnings FATAL => 'all';
 use Carp qw( croak );
 
-our $VERSION = '0.04';
+our $VERSION = '0.21';
 
 =head1 NAME
 
@@ -66,7 +66,7 @@ Accessor to debugging flag.
 sub debug
 {
     my $self = shift;
-	@_ ? $debug = shift : $debug;
+    @_ ? $debug = shift : $debug;
 }
 
 =head2 clear
@@ -88,12 +88,12 @@ Store debugging information.
 
 sub store
 {
-	return	unless($debug);
+    return  unless($debug);
 
     my ($self, $id, @args) = @_;
-	return	if(!$id || $debug < $id);
+    return  if(!$id || $debug < $id);
 
-	push @debug, [$id, join(" ",@args)];
+    push @debug, [$id, join(" ",@args)];
 }
 
 =head2 retrieve
@@ -105,9 +105,9 @@ Retrieve debugging information.
 sub retrieve
 {
     my $self = shift;
-	my $id   = shift || 1;
+    my $id   = shift || 1;
 
-	return grep {$_->[0] <= $id} @debug;
+    return grep {$_->[0] <= $id} @debug;
 }
 
 =head2 dumper
@@ -119,9 +119,9 @@ Uses 'on demand' call to Data::Dumper::Dumper().
 sub dumper
 {
     my $self = shift;
-	require 'Data/Dumper.pm';
-	Data::Dumper->import();
-	Dumper(@_);
+    require 'Data/Dumper.pm';
+    Data::Dumper->import();
+    Dumper(@_);
 }
 
 1;

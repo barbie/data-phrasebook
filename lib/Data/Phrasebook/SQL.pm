@@ -6,7 +6,7 @@ use Carp qw( croak );
 
 use Data::Phrasebook::SQL::Query;
 
-our $VERSION = '0.19';
+our $VERSION = '0.21';
 
 =head1 NAME
 
@@ -71,8 +71,8 @@ Set, or get, the current DBI handle.
 =cut
 
 sub dbh {
-	my $self = shift;
-	@_ ? $self->{dbh} = shift : $self->{dbh};
+    my $self = shift;
+    @_ ? $self->{dbh} = shift : $self->{dbh};
 }
 
 =head2 query
@@ -119,22 +119,22 @@ query object's C<order_args> and then C<args> methods.
 sub query {
     my $self = shift;
     my ($id, $args) = @_;
-	$self->store(3,"->query IN");
+    $self->store(3,"->query IN");
 
     my $map = $self->data($id);
     croak "No mapping for `$id'" unless($map);
     my $sql = '';
 
-	$self->store(4,"->query id=[$id]");
-	$self->store(4,"->query map=[$map]");
+    $self->store(4,"->query id=[$id]");
+    $self->store(4,"->query map=[$map]");
 
-	if(ref $map eq 'HASH') {
-	    croak "No SQL content for `$id'." unless exists $map->{sql}
-		    and defined $map->{sql};
-	    $sql = $map->{sql};
-	} else {
-		$sql = $map;	# we assume sql string only
-	}
+    if(ref $map eq 'HASH') {
+        croak "No SQL content for `$id'." unless exists $map->{sql}
+            and defined $map->{sql};
+        $sql = $map->{sql};
+    } else {
+        $sql = $map;    # we assume sql string only
+    }
 
     my @order;
     $sql =~ s{:(\w+)}[
@@ -142,13 +142,13 @@ sub query {
         "?"
     ]egx;
 
-	if($self->debug) {
-		$self->store(4,"->query sql=[$sql]");
-		$self->store(4,"->query order=[".join(",",@order)."]");
-		$self->store(4,"->query args=[".$self->dumper($args)."]");
-	}
-	
-	my $q = Data::Phrasebook::SQL::Query->new(
+    if($self->debug) {
+        $self->store(4,"->query sql=[$sql]");
+        $self->store(4,"->query order=[".join(",",@order)."]");
+        $self->store(4,"->query args=[".$self->dumper($args)."]");
+    }
+    
+    my $q = Data::Phrasebook::SQL::Query->new(
         sql => $sql,
         order => \@order,
         dbh => $self->dbh,

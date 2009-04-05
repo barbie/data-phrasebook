@@ -95,7 +95,7 @@ If it worked, then become root and type:
 
     # make install
 
-Congratulations. You've just installed Phrasebook.
+Congratulations. You've just installed Data::Phrasebook.
 
 If you have a copy of cpantest installed, type:
 

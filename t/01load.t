@@ -3,7 +3,7 @@ use strict;
 use lib 't';
 use vars qw( $class );
 
-use Test::More tests => 7;
+use Test::More tests => 11;
 
 # ------------------------------------------------------------------------
 
@@ -13,6 +13,7 @@ BEGIN {
 }
 
 my $file = 't/01phrases.txt';
+my $file2 = 't/01phrases2.txt';
 
 # ------------------------------------------------------------------------
 
@@ -49,5 +50,18 @@ my $file = 't/01phrases.txt';
         is ($str, "Welcome to Bob's world. It is a nice whatever.",
             'Fetch matches' );
     }
+}
+
+{
+    my $obj = $class->new;
+    $obj->file( $file );
+    is( $obj->file() => $file , 'Set/get file works');
+    my $str = $obj->fetch( 'baz' );
+    is($str, 'This is File 1');
+
+    $obj->file( $file2 );
+    is( $obj->file() => $file2 , 'Set/get file works');
+    $str = $obj->fetch( 'baz' );
+    is($str, 'This is File 2');
 }
 

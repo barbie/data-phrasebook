@@ -5,7 +5,7 @@ use base qw( Data::Phrasebook::Debug );
 use vars qw( $AUTOLOAD );
 use Carp qw( croak );
 
-our $VERSION = '0.19';
+our $VERSION = '0.21';
 
 =head1 NAME
 
@@ -14,6 +14,7 @@ Data::Phrasebook::SQL::Query - Query Extension to the SQL/DBI Phrasebook Model.
 =head1 SYNOPSIS
 
     my $q = $book->query( 'find_author' );
+    my $q = $book->query( 'find_author', 'Dictionary' );
 
 =head1 DESCRIPTION
 
@@ -60,39 +61,43 @@ Get/set the database handle.
 
 sub new {
     my $self = shift;
-	my %hash = @_;
-	$self->store(3,"$self->new IN");
-	my $atts = \%hash;
-	bless $atts, $self;
-	return $atts;
+    my %hash = @_;
+    $self->store(3,"$self->new IN");
+    my $atts = \%hash;
+    bless $atts, $self;
+    return $atts;
 }
 
-sub DESTROY {}
+sub DESTROY {
+    my $self = shift;
+    my $sth = $self->sth;
+    $sth->finish    if($sth);
+}
 
 sub sql {
-	my $self = shift;
-	@_ ? $self->{sql} = shift : $self->{sql};
+    my $self = shift;
+    @_ ? $self->{sql} = shift : $self->{sql};
 }
 sub dbh {
-	my $self = shift;
-	@_ ? $self->{dbh} = shift : $self->{dbh};
+    my $self = shift;
+    @_ ? $self->{dbh} = shift : $self->{dbh};
 }
 sub sth {
-	my $self = shift;
-	@_ ? $self->{sth} = shift : $self->{sth};
+    my $self = shift;
+    @_ ? $self->{sth} = shift : $self->{sth};
 }
 sub args {
-	my $self = shift;
-	my @args = @_;
-	$self->{args} = \@args if(@_);
-	return $self->{args};
+    my $self = shift;
+    my @args = @_;
+    $self->{args} = \@args if(@_);
+    return $self->{args};
 }
 sub order {
-	my $self = shift;
-	my @args = @_;
-	$self->{order} = \@args if(@_);
-	return @{$self->{order}} if($self->{order});
-	return ();
+    my $self = shift;
+    my @args = @_;
+    $self->{order} = \@args if(@_);
+    return @{$self->{order}} if($self->{order});
+    return ();
 }
 
 =head1 PREPARATION / EXECUTING METHODS
@@ -112,13 +117,13 @@ Calls C<prepare> if necessary.
 sub execute
 {
     my $self = shift;
-	$self->store(3,"->execute IN");
+    $self->store(3,"->execute IN");
     my $sth = $self->sth;
     my @args;
     @args = $self->order_args( @_ ) if @_;
     $sth = $self->prepare() unless $sth;
     if (@args) {
-		$self->store(4,"->execute args[".join(",",@args)."]");
+        $self->store(4,"->execute args[".join(",",@args)."]");
         return $sth->execute( map { $$_ } @args );
     } else {
         $self->rebind;
@@ -143,11 +148,11 @@ sub order_args
 
     for (0..$#order)
     {
-		my $key = $order[$_];
+        my $key = $order[$_];
         if (exists $args{ $key })
         {
             my $val = $args{ $key };
-	    	$args[$_] = (ref $val) ? $val : \$val;
+            $args[$_] = (ref $val) ? $val : \$val;
         }
     }
 
@@ -165,9 +170,9 @@ to know about it.
 sub prepare
 {
     my $self = shift;
-	$self->store(3,"$self->prepare IN");
+    $self->store(3,"$self->prepare IN");
     my $sql = $self->sql;
-	$self->store(4,"$self->prepare sql=[$sql]");
+    $self->store(4,"$self->prepare sql=[$sql]");
     croak "Can't prepare without SQL" unless defined $sql;
     my $sth = $self->dbh->prepare_cached( $sql );
     $self->sth( $sth );
@@ -229,9 +234,9 @@ sub AUTOLOAD
         no strict 'refs';
         my $execute = $method =~ /^fetch/ ? 0 : 0 ;
         *{$method} = sub {
-				my $s = shift;
-				$s->_call_other( $execute, $method, @_ )
-		};
+                my $s = shift;
+                $s->_call_other( $execute, $method, @_ )
+        };
         return $self->$method( @_ );
     }
     return;

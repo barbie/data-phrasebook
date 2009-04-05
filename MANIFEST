@@ -21,6 +21,7 @@ README
 t/00basic.t
 t/01load.t
 t/01phrases.txt
+t/01phrases2.txt
 t/02phrases.txt
 t/02shorts.t
 t/03phrases.txt

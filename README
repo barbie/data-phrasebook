@@ -3,7 +3,7 @@ Data::Phrasebook
 
 DESCRIPTION
 
-    Abstract your queries!
+  Abstract your queries!
 
 This distribution enables the framework for abstracting common or locale data
 out of your code into a datastore. The default is within a plain text file,
@@ -34,10 +34,10 @@ INSTALLATION
 
 To install this module type the following:
 
-   perl Makefile.PL
-   make
-   make test
-   make install
+ perl Makefile.PL
+ make
+ make test
+ make install
 
 For more detailed installation instructions, see INSTALL.
 
@@ -59,6 +59,14 @@ if you are able to pinpoint problems or even supply a patch.
 Fixes are dependant upon their severity and my availablity. Should a fix not
 be forthcoming, please feel free to (politely) remind me.
 
+DSLIP
+
+  b - Beta testing
+  d - Developer
+  p - Perl-only
+  O - Object oriented
+  p - Standard-Perl: user may choose between GPL and Artistic
+
 AUTHOR
 
 Original author: Iain Campbell Truskett (16.07.1979 - 29.12.2003)
@@ -75,3 +83,6 @@ COPYRIGHT AND LICENCE
   This module is free software; you can redistribute it and/or 
   modify it under the same terms as Perl itself.
 
+The full text of the licences can be found in the Artistic and
+COPYING files included with this module, or in perlartistic and
+perlgpl in Perl 5.8.1 or later.

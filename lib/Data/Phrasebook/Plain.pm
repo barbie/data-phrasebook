@@ -4,7 +4,7 @@ use warnings FATAL => 'all';
 use base qw( Data::Phrasebook::Generic Data::Phrasebook::Debug );
 use Carp qw( croak );
 
-our $VERSION = '0.19';
+our $VERSION = '0.21';
 
 =head1 NAME
 
@@ -22,8 +22,12 @@ Data::Phrasebook::Plain - The Simple Phrasebook Model.
 
     my $r = Data::Phrasebook->new( file => 'phrases.txt' );
 
-    $q->delimiters( qr{ \[% \s* (\w+) \s* %\] }x );
+    # simple keyword to phrase mapping
     my $phrase = $q->fetch($keyword);
+
+    # keyword to phrase mapping with parameters
+    $q->delimiters( qr{ \[% \s* (\w+) \s* %\] }x );
+    my $phrase = $q->fetch($keyword,{this => 'that'});
 
 =head1 DESCRIPTION
 
@@ -59,17 +63,17 @@ sub fetch
 {
     my $self = shift;
     my ($id, $args) = @_;
-	$self->store(3,"->fetch IN");
+    $self->store(3,"->fetch IN");
 
-	my $map = $self->data($id);
+    my $map = $self->data($id);
     croak "No mapping for `$id'" unless($map);
     my $delim_RE = $self->delimiters || qr{ \[% \s* (\w+) \s* %\] }x;
     croak "Mapping for `$id` not a string." if ref $map;
 
-	if($self->debug) {
-		$self->store(4,"->fetch delimiters=[$delim_RE]");
-		$self->store(4,"->fetch args=[".$self->dumper($args)."]");
-	}
+    if($self->debug) {
+        $self->store(4,"->fetch delimiters=[$delim_RE]");
+        $self->store(4,"->fetch args=[".$self->dumper($args)."]");
+    }
 
     $map =~ s{$delim_RE}[
          die "Croak no value given for `$1'" unless defined $args->{$1};
@@ -91,8 +95,8 @@ This example also shows the default regex.
 =cut
 
 sub delimiters {
-	my $self = shift;
-	@_ ? $self->{delimiters} = shift : $self->{delimiters};
+    my $self = shift;
+    @_ ? $self->{delimiters} = shift : $self->{delimiters};
 }
 
 1;
