@@ -5,7 +5,7 @@ use Data::Phrasebook::Loader;
 use base qw( Data::Phrasebook::Debug );
 use Carp qw( croak );
 
-our $VERSION = '0.23';
+our $VERSION = '0.24';
 
 =head1 NAME
 
@@ -187,13 +187,12 @@ available (provided the plugin supports it) as:
 
   my @keywords = $pb->keywords;
 
-Note the list returned will be a combination of the default and any named
-dictionary.
+or
 
   my @keywords = $pb->keywords( $dict );
 
-Specifying a dictionary may not be supported by all plugins. See the 
-appropriate loader plugin for further details.
+Note the list will be a combination of the default and any named dictionary.
+However, not all Loader plugins may support the second usage.
 
 =cut 
 

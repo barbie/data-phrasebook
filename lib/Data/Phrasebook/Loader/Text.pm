@@ -4,7 +4,7 @@ use warnings FATAL => 'all';
 use base qw( Data::Phrasebook::Loader::Base Data::Phrasebook::Debug );
 use Carp qw( croak );
 
-our $VERSION = '0.23';
+our $VERSION = '0.24';
 
 =head1 NAME
 
@@ -161,18 +161,20 @@ current keywords available as:
 
   my @keywords = $pb->keywords;
 
-Note the list returned will be a combination of the default and any named
-dictionary.
+or
 
-  my @keywords = $pb->keywords( $dict );
+  my @keywords = $pb->keywords( $path, $dict );
 
-Note that $dict can be the full path or the file name for the current phrase
-directory.
+Note that $path can either be the directory path, where $dict must be the 
+specific file name of the dictionary, or the full path of the dictionary file.
+
+In the second instance, the function will not load a dictionary, but can be 
+used to interrogate the contents of a known dictionary.
 
 =cut
 
 sub keywords {
-    return keys %phrasebook if(@_ == 1);
+    return sort keys %phrasebook if(@_ == 1);
 
     my ($self,$file,$dict) = @_;
     $file ||= $self->{parent}->file;
@@ -189,7 +191,7 @@ sub keywords {
     }
     close BOOK;
 
-    return @keywords;
+    return sort @keywords;
 }
 
 1;

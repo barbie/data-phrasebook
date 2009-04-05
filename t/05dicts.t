@@ -25,13 +25,13 @@ $book->dict('german.txt');
 is($book->fetch('foo'), "diese ist Deutsche");
 
 # what are the current keywords?
-my @tkeys = qw( baz foo );
+my @tkeys = qw(baz foo);
 my @keywords = $book->keywords();
 is_deeply(\@keywords,\@tkeys);
 
 # what are the keywords in the first dictionary?
-@tkeys = qw( foo bar );
-@keywords = $book->keywords('t/phrases/english.txt');
+@tkeys = qw(bar foo);
+@keywords = $book->keywords('t/phrases','english.txt');
 is_deeply(\@keywords,\@tkeys);
 
 # do we still have the second one loaded?

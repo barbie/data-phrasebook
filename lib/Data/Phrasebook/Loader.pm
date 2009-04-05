@@ -6,7 +6,7 @@ use Carp qw( croak );
 
 use Module::Pluggable   search_path => ['Data::Phrasebook::Loader'];
 
-our $VERSION = '0.23';
+our $VERSION = '0.24';
 
 =head1 NAME
 
