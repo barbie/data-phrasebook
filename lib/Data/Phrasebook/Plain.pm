@@ -4,7 +4,7 @@ use warnings FATAL => 'all';
 use base qw( Data::Phrasebook::Generic Data::Phrasebook::Debug );
 use Carp qw( croak );
 
-our $VERSION = '0.25';
+our $VERSION = '0.26';
 
 =head1 NAME
 
@@ -76,7 +76,7 @@ sub fetch
     }
 
     $map =~ s{$delim_RE}[
-         die "Croak no value given for '$1'" unless defined $args->{$1};
+         croak "No value given for '$1'" unless defined $args->{$1};
          $args->{$1};
     ]egx;
 

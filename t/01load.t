@@ -1,15 +1,18 @@
 #!/usr/bin/perl -w
 use strict;
 use lib 't';
-use vars qw( $class );
+use vars qw( $class $subclass );
 
-use Test::More tests => 11;
+use Test::More tests => 20;
 
 # ------------------------------------------------------------------------
 
 BEGIN {
     $class = 'Data::Phrasebook';
     use_ok $class;
+
+    $subclass = 'MyPhrasebook';
+    use_ok $subclass;
 }
 
 my $file = 't/01phrases.txt';
@@ -19,9 +22,29 @@ my $file2 = 't/01phrases2.txt';
 
 {
     my $obj = $class->new;
-    isa_ok( $obj => "${class}::Plain", 'Bare new' );
+    isa_ok( $obj => "${class}::Plain", 'Class new' );
     $obj->file( $file );
     is( $obj->file() => $file , 'Set/get file works');
+}
+
+{
+    my $obj = $subclass->new;
+    isa_ok( $obj => "${class}::Plain", 'Subclass new' );
+    $obj->file( $file );
+    is( $obj->file() => $file , 'Set/get file works');
+}
+
+{
+    my $obj = $subclass->new( class => 'MyClass' );
+    isa_ok( $obj => "MyClass", 'Subbed subclass new' );
+    $obj->file( $file );
+    is( $obj->file() => $file , 'Set/get file works');
+}
+
+{
+	my $obj;
+    eval { $obj = $subclass->new( class => 'BadClass' ); };
+    is( $obj, undef, 'Nonexistent subbed subclass new' );
 }
 
 {
@@ -65,5 +88,15 @@ my $file2 = 't/01phrases2.txt';
     is( $obj->file() => $file2 , 'Set/get file works');
     $str = $obj->fetch( 'baz' );
     is($str, 'This is File 2');
+
+    $obj->file( $file );
+    eval { $str = $obj->fetch( 'bar' ); };
+    like($@, qr/No value/);
+    eval { $str = $obj->fetch( 'notfound' ); };
+    like($@, qr/No mapping/);
 }
 
+{
+    eval { my $obj = $class->new(class  => 'Plain', loader => 'Bogus' ); $obj->fetch( 'bar' ); };
+    like($@, qr/no loader available of that name/);
+}

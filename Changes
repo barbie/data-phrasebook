@@ -1,5 +1,14 @@
 # Changes log for Data::Phrasebook
 
+0.26    28/09/2006
+	- Patch supplied from Oliver Gorwits to support the ability of passing
+	  an array reference for the list of dictionaries. 
+	- Fixed a bug in new, where the attributes were not getting set
+	  correctly. (Oliver Gorwits)
+	- Fixed POD to remove reference to obsolete method.
+	- more tests
+        - Devel::Cover - 89.9%
+
 0.25    21/11/2005
 	- Added support for multiple dictionaries.
 	- Finally added the Module::Pluggable::search_path functionality

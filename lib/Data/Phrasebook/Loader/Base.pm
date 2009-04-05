@@ -4,7 +4,9 @@ use warnings FATAL => 'all';
 use base qw( Data::Phrasebook::Debug );
 use Carp qw( croak );
 
-our $VERSION = '0.25';
+our $VERSION = '0.26';
+
+my $something = 0;
 
 =head1 NAME
 
@@ -18,32 +20,6 @@ Data::Phrasebook::Loader::Base - Base loader plugin class.
 
 C<Data::Phrasebook::Loader::Base> acts as a base class for phrasebook 
 plugins.
-
-=head1 INHERITABLE METHODS
-
-=head2 new
-
-C<new> merely creates a new instance. Nothing exciting.
-
-=head2 load
-
-C<load> is an abstract method here. You must define your own
-in your subclass. Loads the phrasebook.
-
-=head2 get
-
-C<get> is an abstract method here. You must define your own
-in your subclass. Gets the phrase.
-
-=head2 dicts
-
-C<dicts> is an abstract method here. You must define your own
-in your subclass. Returns the list of dictionaries available.
-
-=head2 keywords
-
-C<keywords> is an abstract method here. You must define your own
-in your subclass. Returns the list of keywords available.
 
 =head1 CONSTRUCTOR
 
@@ -63,7 +39,34 @@ sub new {
     return $atts;
 }
 
-sub load     { return undef }
+=head1 INHERITABLE METHODS
+
+=head2 load
+
+C<load> is an abstract method here. You must define your own in your
+subclass. Loads the phrasebook.
+
+=head2 get
+
+C<get> is an abstract method here. You must define your own in your
+subclass. Gets the phrase.
+
+=head2 dicts
+
+C<dicts> is an abstract method here. You must define your own in your
+subclass. Returns the list of dictionaries available.
+
+=head2 keywords
+
+C<keywords> is an abstract method here. You must define your own in your
+subclass. Returns the list of keywords available.
+
+=cut
+
+sub load     { 
+	return undef 
+}
+
 sub get      { return undef }
 sub dicts    { return () }
 sub keywords { return () }

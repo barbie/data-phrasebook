@@ -5,7 +5,7 @@ use Data::Phrasebook::Loader;
 use base qw( Data::Phrasebook::Debug );
 use Carp qw( croak );
 
-our $VERSION = '0.25';
+our $VERSION = '0.26';
 
 =head1 NAME
 
@@ -33,11 +33,12 @@ This module provides a base class for phrasebook implementations.
 C<new> takes an optional hash of arguments. Each value in the hash
 is given as an argument to a method of the same name as the key.
 
-This constructor should B<never> need to be called directly
+This constructor should B<never> need to be called directly as
 Phrasebook creation should go through the L<Data::Phrasebook> factory.
 
-Subclasses who wish to override behaviour should actually override
-C<init> (see source for details).
+Subclasses should provide at least an accessor method to retrieve values for
+a named key. Further methods can be overloaded, but must retain a standard
+API to the overloaded method.
 
 All, or at least I<most>, phrasebook implementations should inherit from
 B<this> class.
@@ -49,14 +50,15 @@ sub new {
     my %hash = @_;
     $class->store(3,"$class->new IN");
 
-    my $atts = \%hash;
-    $class->store(4,"$class->new args=[".$class->dumper($atts)."]");
-    bless $atts, $class;
+    $class->store(4,"$class->new args=[".$class->dumper(\%hash)."]");
+    my $self = bless {}, $class;
+    foreach (keys %hash) {
+        $self->$_($hash{$_});
+    }
+#   $self->{delimiters} = qr{ \[% \s* (\w+) \s* %\] }x;
+    $self->{delimiters} = qr{ :(\w+) }x;
 
-#    $atts->{delimiters} = qr{ \[% \s* (\w+) \s* %\] }x;
-    $atts->{delimiters} = qr{ :(\w+) }x;
-
-    return $atts;
+    return $self;
 }
 
 =head1 METHODS
@@ -121,6 +123,7 @@ sub file {
     }
     $self->{file};
 }
+
 sub dict {
     my $self = shift;
 
@@ -130,15 +133,12 @@ sub dict {
 
 		if($list1 ne $list2) {
 			$self->unload();
-			$self->{dict} = [@_];
+			$self->{dict} = (ref $_[0] ? $_[0] : [@_]);
 		}
 	}
 
-	return ()		unless($self->{dict} && wantarray);
-	return undef	unless($self->{dict});
-
-	return @{$self->{dict}}	if(wantarray);
-    return $self->{dict}->[0];
+	return($self->{dict} ? @{$self->{dict}}		: ()	)	if(wantarray);
+	return($self->{dict} ? $self->{dict}->[0]	: undef );
 }
 
 =head2 dicts
@@ -304,7 +304,7 @@ Maintainer: Barbie <barbie@cpan.org> since January 2004.
 =head1 LICENCE AND COPYRIGHT
 
   Copyright (C) Iain Truskett, 2003. All rights reserved.
-  Copyright (C) Barbie, 2004-2005. All rights reserved.
+  Copyright (C) Barbie, 2004-2006. All rights reserved.
 
   This library is free software; you can redistribute it and/or modify
   it under the same terms as Perl itself.

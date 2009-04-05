@@ -3,7 +3,7 @@ use strict;
 use lib 't';
 use vars qw( $class );
 
-use Test::More tests => 10;
+use Test::More tests => 13;
 
 # ------------------------------------------------------------------------
 
@@ -58,6 +58,13 @@ my %trail = (
 	{
 		my @log = $obj->retrieve(4);
 		is(scalar(@log),$trail{1});
+		@log = $obj->retrieve();
+		is(scalar(@log),$trail{1});
+
+		my $items = $obj->store();
+		is($items,undef);
+		$items = $obj->store(5,'hello');
+		is($items,undef);
 	}
 }
 

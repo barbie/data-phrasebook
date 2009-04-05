@@ -4,7 +4,7 @@ use warnings FATAL => 'all';
 use base qw( Data::Phrasebook::Loader::Base Data::Phrasebook::Debug );
 use Carp qw( croak );
 
-our $VERSION = '0.25';
+our $VERSION = '0.26';
 
 =head1 NAME
 
@@ -101,7 +101,6 @@ sub load {
 		push @file, $file;
 	}
 
-
     %phrasebook = ();   # ignore previous dictionary
 
 	for my $file (@file) {
@@ -127,7 +126,7 @@ sub get {
     if($class->debug) {
         $class->store(3,"->get IN");
         $class->store(4,"->get key=[$key]");
-        $class->store(4,"->get phrase=[".($phrasebook{$key} || 'undef')."]");
+        $class->store(4,"->get phrase=[$phrasebook{$key}]");
     }
     return $phrasebook{$key};
 }
@@ -154,7 +153,7 @@ or
 sub dicts {
     my ($self,$path) = @_;
     $path ||= $self->{parent}->file;
-    return ()	unless(-d $path && -r $path);
+    return ()	unless($path && -d $path && -r $path);
 
     my @files = map { s/$path.//;$_ } grep {/^[^\.]+.txt$/} glob("$path/*");
     return @files;

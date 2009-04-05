@@ -5,7 +5,7 @@ use base qw( Data::Phrasebook::Debug );
 use vars qw( $AUTOLOAD );
 use Carp qw( croak );
 
-our $VERSION = '0.25';
+our $VERSION = '0.26';
 
 =head1 NAME
 
@@ -70,8 +70,7 @@ sub new {
 
 sub DESTROY {
     my $self = shift;
-    my $sth = $self->sth;
-    $sth->finish    if($sth);
+    $self->sth->finish    if($self->sth);
 }
 
 sub sql {

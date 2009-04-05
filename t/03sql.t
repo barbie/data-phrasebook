@@ -4,7 +4,7 @@ use lib 't';
 use vars qw( $class );
 use BookDB;
 
-use Test::More tests => 11;
+use Test::More tests => 17;
 
 # ------------------------------------------------------------------------
 
@@ -129,5 +129,59 @@ my $file = 't/03phrases.txt';
             $count++ if $row->{author} eq 'Lawrence Miles';
         }
         is( $count => 7, "7 more Miles" );
+		$q->sth->finish;
+    }
+}
+
+{
+    my $dbh = BookDB->new();
+
+    my $obj = $class->new(
+        class => 'SQL',
+        file => $file,
+        dbh => $dbh,
+    );
+
+    eval { my $q = $obj->query( 'notfound' ); };
+    like( $@ => qr/No mapping/ );
+}
+
+{
+	my $dbh = BookDB->new();
+
+    my $obj = $class->new(
+        class => 'SQL',
+        file => $file,
+    );
+
+    my $author = 'Lance Parkin';
+    my $q = $obj->query( 'find_fields',
+		'replace' => { 'fields' => 'author' },
+		'bind'    => { 'author' => $author }
+		);
+
+    eval { $q->prepare(); };
+	like( $@, qr//, "Can't prepare without a DB connection" );
+	$q->dbh($dbh);
+    eval { $q->prepare(); };
+	is( $@, '', "Can prepare with a DB connection" );
+
+	my $sql = 'select class,title,author from books where author = ?';
+	my $old = $q->sql;
+	my $new = $q->sql($sql);
+	is( $new, $sql, "New is changed" );
+	isnt( $new, $old, "New isnt old" );
+
+    $q->prepare();
+
+	{
+        my $count = 0;
+        $q->execute();
+        while ( my $row = $q->fetchrow_hashref )
+        {
+            $count++ if $row->{author} eq $author;
+        }
+        is( $count => 7, "7 more Parkins" );
+		$q->sth->finish;
     }
 }

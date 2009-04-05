@@ -4,7 +4,7 @@ use warnings FATAL => 'all';
 use base qw( Data::Phrasebook::Debug );
 use Carp qw( croak );
 
-our $VERSION = '0.25';
+our $VERSION = '0.26';
 
 =head1 NAME
 
