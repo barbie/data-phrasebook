@@ -1,0 +1,154 @@
+package Data::Phrasebook::Debug;
+use strict;
+use warnings FATAL => 'all';
+use Carp qw( croak );
+
+our $VERSION = '0.03';
+
+=head1 NAME
+
+Data::Phrasebook::Debug - Phrasebook debugging.
+
+=head1 SYNOPSIS
+
+    use Data::Phrasebook;
+
+    my $q = Data::Phrasebook->new(
+        class  => 'Plain',
+        loader => 'Text',
+        file   => 'phrases.txt',
+		debug  => 2,
+    );
+
+    my $r = Phrasebook->new( file  => 'phrases.txt', debug => 3 );
+
+	$r->debug(4);
+	$r->store(3,"Start");
+	my @log = $r->retrieve(2);
+	$r->clear();
+
+=head1 DESCRIPTION
+
+This module enables debug logging for phrasebook classes. It simply stores
+all interaction with the phrasebook, which can then be interrogated. Do not
+call directly, but via the class object.
+
+There is a single storage for all levels of the Data::Phrasebook heirarchy.
+This then enables storage and retrieval to be performed by the user. There
+are several different levels of debugging, detailed as follows:
+
+  1 - Errors
+  2 - Warnings
+  3 - Information
+  4 - Variable Debugging
+
+The first three are simple strings that are recorded during the processing.
+However, the latter is specifically for dumping the contents of significant
+variables. 
+
+Through the use of the debug() method, the debugging can be switched on and
+off at significant points. The clear() method will clear the current trail of
+debugging information.
+
+=cut
+
+my @debug;
+my $debug = 0;
+
+=head1 METHODS
+
+=head2 debug
+
+Accessor to debugging flag.
+
+=cut
+
+sub debug
+{
+    my $self = shift;
+	@_ ? $debug = shift : $debug;
+}
+
+=head2 clear
+
+Clear the currently stored debugging information.
+
+=cut
+
+sub clear
+{
+    @debug = ();
+}
+
+=head2 store
+
+Store debugging information.
+
+=cut
+
+sub store
+{
+	return	unless($debug);
+
+    my ($self, $id, @args) = @_;
+	return	if(!$id || $debug < $id);
+
+	push @debug, [$id, join(" ",@args)];
+}
+
+=head2 retrieve
+
+Retrieve debugging information.
+
+=cut
+
+sub retrieve
+{
+    my $self = shift;
+	my $id   = shift || 1;
+
+	return grep {$_->[0] <= $id} @debug;
+}
+
+=head2 dumper
+
+Uses 'on demand' call to Data::Dumper::Dumper().
+
+=cut
+
+sub dumper
+{
+    my $self = shift;
+	require 'Data/Dumper.pm';
+	Data::Dumper->import();
+	Dumper(@_);
+}
+
+1;
+
+__END__
+
+=head1 SEE ALSO
+
+L<Data::Phrasebook>
+
+=head1 AUTHOR
+
+Barbie, C< <<barbie@cpan.org>> >
+for Miss Barbell Productions, L<http://www.missbarbell.co.uk>
+
+Birmingham Perl Mongers, L<http://birmingham.pm.org/>
+
+=head1 COPYRIGHT AND LICENSE
+
+  Copyright (C) 2004-2005 Barbie for Miss Barbell Productions
+  All Rights Reserved.
+
+  This module is free software; you can redistribute it and/or 
+  modify it under the same terms as Perl itself.
+
+  The full text of the licences can be found in the F<Artistic> and
+  F<COPYING> files included with this module, or in L<perlartistic> and
+  L<perlgpl> in Perl 5.8.1 or later.
+
+=cut

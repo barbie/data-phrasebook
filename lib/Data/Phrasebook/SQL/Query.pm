@@ -1,0 +1,258 @@
+package Data::Phrasebook::SQL::Query;
+use strict;
+use warnings FATAL => 'all';
+use base qw( Data::Phrasebook::Debug );
+use vars qw( $AUTOLOAD );
+use Carp qw( croak );
+
+our $VERSION = '0.18';
+
+=head1 NAME
+
+Data::Phrasebook::SQL::Query - A query from a phrasebook.
+
+=head1 SYNOPSIS
+
+=head1 DESCRIPTION
+
+=head1 CONSTRUCTOR
+
+=head2 new
+
+Don't use this directly. Let L<Data::Phrasebook::SQL> create it for you.
+
+=head1 METHODS
+
+=head2 sql
+
+Get/set the current C<sql> statement, in a form suitable for passing
+straight to DBI.
+
+=head2 sth
+
+Get/set the current statement handle.
+
+=head2 args
+
+Return list of arguments that will be used as bind parameters to any
+placeholders. Any given arguments will replace the whole list.
+
+Returns list in list context, arrayref in scalar.
+
+=head2 order
+
+As for C<args>, but regarding the corresponding list of argument
+B<names>.
+
+The assorted C<order_XXX> methods are supported as for C<args_XXX>.
+
+=head2 dbh
+
+Get/set the database handle.
+
+=cut
+
+sub new {
+    my $self = shift;
+	my %hash = @_;
+	$self->store(3,"$self->new IN");
+	my $atts = \%hash;
+	bless $atts, $self;
+	return $atts;
+}
+
+sub DESTROY {}
+
+sub sql {
+	my $self = shift;
+	@_ ? $self->{sql} = shift : $self->{sql};
+}
+sub dbh {
+	my $self = shift;
+	@_ ? $self->{dbh} = shift : $self->{dbh};
+}
+sub sth {
+	my $self = shift;
+	@_ ? $self->{sth} = shift : $self->{sth};
+}
+sub args {
+	my $self = shift;
+	my @args = @_;
+	$self->{args} = \@args if(@_);
+	return $self->{args};
+}
+sub order {
+	my $self = shift;
+	my @args = @_;
+	$self->{order} = \@args if(@_);
+	return @{$self->{order}} if($self->{order});
+	return ();
+}
+
+=head1 PREPARATION / EXECUTING METHODS
+
+=head2 execute
+
+Executes the query. Returns the result of C<DBI::execute>.
+
+Any arguments are given to C<order_args> with the return of that method
+being used as arguments to C<DBI::execute>. If no arguments, uses those
+already specified.
+
+Calls C<prepare> if necessary.
+
+=cut
+
+sub execute
+{
+    my $self = shift;
+	$self->store(3,"->execute IN");
+    my $sth = $self->sth;
+    my @args;
+    @args = $self->order_args( @_ ) if @_;
+    $sth = $self->prepare() unless $sth;
+    if (@args) {
+		$self->store(4,"->execute args[".join(",",@args)."]");
+        return $sth->execute( map { $$_ } @args );
+    } else {
+        $self->rebind;
+        return $sth->execute();
+    }
+}
+
+=head2 order_args
+
+Given a hash or hashref of keyword to value mappings, organises
+an array of arguments suitable for use as bind parameters
+in the order needed by the query itself.
+
+=cut
+
+sub order_args
+{
+    my $self = shift;
+    my %args = (@_ == 1 ? %{$_[0]} : @_);
+    my @order = $self->order;
+    my @args = $self->args;
+
+    for (0..$#order)
+    {
+		my $key = $order[$_];
+        if (exists $args{ $key })
+        {
+            my $val = $args{ $key };
+	    	$args[$_] = (ref $val) ? $val : \$val;
+        }
+    }
+
+    return @args;
+}
+
+=head2 prepare
+
+Prepares the query for execution. This method is called
+implicitly in most cases so you generally don't need
+to know about it.
+
+=cut
+
+sub prepare
+{
+    my $self = shift;
+	$self->store(3,"$self->prepare IN");
+    my $sql = $self->sql;
+	$self->store(4,"$self->prepare sql=[$sql]");
+    croak "Can't prepare without SQL" unless defined $sql;
+    my $sth = $self->dbh->prepare_cached( $sql );
+    $self->sth( $sth );
+    $sth;
+}
+
+=head2 rebind
+
+Rebinds any bound values. Lets one pass a scalar reference in
+the arguments to C<order_args> and have the bound value update
+if the original scalar changes.
+
+This method is not needed externally to this class.
+
+=cut
+
+sub rebind
+{
+    my $self = shift;
+    my $sth = $self->sth;
+    my $args = $self->args;
+    for my $x (0..$#{$args})
+    {
+        $sth->bind_param( $x+1, ${ $args->[$x] } )
+    }
+}
+
+=head1 DELEGATED METHODS
+
+Any method not mentioned above is given to the statement
+handle.
+
+All these delegations will implicitly call C<prepare>.
+Any C<fetch*> methods will additionally call C<execute>
+unless the statement handle is already active.
+
+=cut
+
+sub _call_other
+{
+    my ($self, $execute, $method) = splice @_, 0, 3;
+    my $sth = $self->sth || $self->prepare();
+    $self->execute() if $execute and not $sth->{Active};
+    return $sth->$method( @_ );
+}
+
+sub AUTOLOAD
+{
+    my $self = shift;
+    my ($method) = $AUTOLOAD =~ /([^:]+)$/;
+#print STDERR "\n#[$AUTOLOAD][$method]\n";
+    my $sth = $self->sth || $self->prepare();
+
+    if ($sth->can($method))
+    {
+        no strict 'refs';
+        my $execute = $method =~ /^fetch/ ? 0 : 0 ;
+        *{$method} = sub {
+				my $s = shift;
+				$s->_call_other( $execute, $method, @_ )
+		};
+        return $self->$method( @_ );
+    }
+    return;
+}
+
+1;
+
+__END__
+
+=head1 SEE ALSO
+
+L<Data::Phrasebook>, 
+L<Data::Phrasebook::SQL>.
+
+=head1 AUTHOR
+
+Original author: Iain Campbell Truskett (16.07.1979 - 29.12.2003).
+
+Maintainer: Barbie <barbie@cpan.org>.
+
+=head1 LICENCE AND COPYRIGHT
+
+  Copyright E<copy> Iain Truskett, 2003. All rights reserved.
+  Copyright E<copy> Barbie, 2004-2005. All rights reserved.
+
+  This library is free software; you can redistribute it and/or modify
+  it under the same terms as Perl itself.
+
+  The full text of the licences can be found in the F<Artistic> and
+  F<COPYING> files included with this module, or in L<perlartistic> and
+  L<perlgpl> in Perl 5.8.1 or later.
+
+=cut

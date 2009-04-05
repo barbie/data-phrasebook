@@ -1,0 +1,47 @@
+# Changes log for Data::Phrasebook
+
+0.18    03 Feb 2005
+        - Name change from Phrasebook to Data::Phrasebook.
+        - Loader now uses Module::Pluggable due to ease of use and the fact
+          that Class::MethodMaker now regularly fails on Win32.
+        - Removed WhiteHole
+        - Major documentation overhaul
+
+0.17    09 Feb 2004
+        - New maintainer - Barbie - as of 31 Jan 2003.
+        - Default loader, YAML, now a separate distribution.
+        - Default loader is now plain text. This was done to minimise the
+          required modules, and to enable the appropriate datastore for
+          loading to be install separately.
+        - dictionary/section setting now implemented as:
+          Phrasebook->new( dict => 'NEW' );
+
+0.16    3 Aug 2003
+        - Fixed execution logic.
+        - Take the right number of arguments off the stack.
+        - A bit more elegant at getting the method's name.
+        - Query refactored a bit.
+        - Documentation fixed regarded some implementations.
+        - No tabs.
+
+0.15    27 July 2003
+        - Abstracted the loader aspect.
+        - Changed default Plain delimiters to match TT.
+        - Added facility to let one change delimiters.
+        - Added test for above.
+        - One can pass an explicit class name to 'new'.
+        - Added the documentation.
+        - Set loader defaults.
+        - Ensure all .pm files compile well.
+        - Added strict and fatal warnings to everything.
+        - Removed unused imports.
+        - Cache delegations.
+        - Add strict+warnings.
+        - Fix variable name.
+
+0.14    25 July 2003
+        - Added versions to everything.
+        - Added WhiteHole to generic.pm to catch wayward methods.
+
+0.13    25 July 2003
+        - Initial release.
