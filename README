@@ -26,7 +26,6 @@ For testing purposes, the following modules are required:
 
 For testing purposes, the following modules are desireable, but not essential:
 
-  Test::MockObject
   Test::Pod           >= 1.00
   Test::Pod::Coverage >= 0.08
   Pod::Coverage

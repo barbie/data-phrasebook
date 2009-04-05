@@ -1,6 +1,9 @@
 # Changes log for Data::Phrasebook
 
-0.18    03 Feb 2005
+0.19    02 Mar 2005
+		- Removed Test::MockObject from tests. No longer needed.
+
+0.18    01 Mar 2005
         - Name change from Phrasebook to Data::Phrasebook.
         - Loader now uses Module::Pluggable due to ease of use and the fact
           that Class::MethodMaker now regularly fails on Win32.

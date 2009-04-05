@@ -15,7 +15,7 @@ sub new
 	};
 
 	# create the object
-	bless $atts, 'DBI::db';
+	bless $atts, $self;
 	$dbh = $atts;
 	return $atts;
 }

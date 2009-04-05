@@ -49,8 +49,6 @@ my %trail = (
             });
     }
 
-#use Data::Dumper;
-#print STDERR "\n#Dump=".Dumper($obj->retrieve(4))."\n";
 	for(1..4) {
 		my @log = $obj->retrieve($_);
 		is(scalar(@log),$trail{$_});
