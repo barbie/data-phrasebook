@@ -6,7 +6,7 @@ use Carp qw( croak );
 
 use Module::Pluggable   search_path => ['Data::Phrasebook::Loader'];
 
-our $VERSION = '0.24';
+our $VERSION = '0.25';
 
 =head1 NAME
 
@@ -49,11 +49,8 @@ sub new
     $self->store(3,"$self->new IN");
     $self->store(4,"$self->new class=[$class]");
 
-# not implemented yet in Module::Pluggable
-#   {
-#       # in the event we have been subclassed
-#       $self->search_path( add => "$self" );
-#   }
+    # in the event we have been subclassed
+    $self->search_path( add => "$self" );
 
     my $plugin;
     my @plugins = $self->plugins();

@@ -4,7 +4,7 @@ use warnings FATAL => 'all';
 use base qw( Data::Phrasebook::Generic Data::Phrasebook::Debug );
 use Carp qw( croak );
 
-our $VERSION = '0.24';
+our $VERSION = '0.25';
 
 =head1 NAME
 
@@ -63,12 +63,12 @@ sub fetch
 {
     my $self = shift;
     my ($id, $args) = @_;
-    $self->store(3,"->fetch IN");
+    $self->store(3,"->fetch IN - @_");
 
     my $map = $self->data($id);
-    croak "No mapping for `$id'" unless($map);
+    croak "No mapping for '$id'" unless($map);
     my $delim_RE = $self->delimiters;
-    croak "Mapping for `$id` not a string." if ref $map;
+    croak "Mapping for '$id' not a string." if ref $map;
 
     if($self->debug) {
         $self->store(4,"->fetch delimiters=[$delim_RE]");
@@ -76,7 +76,7 @@ sub fetch
     }
 
     $map =~ s{$delim_RE}[
-         die "Croak no value given for `$1'" unless defined $args->{$1};
+         die "Croak no value given for '$1'" unless defined $args->{$1};
          $args->{$1};
     ]egx;
 

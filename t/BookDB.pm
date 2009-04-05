@@ -97,7 +97,8 @@ sub execute {
 	}
 	if($query =~ /select class,title,author from books where author/) {
 		if($arg && $arg =~ /Lance Parkin/) {
-			$dbh->{hash} = \@lance;
+			my @list = @lance;
+			$dbh->{hash} = \@list;
 		}
 		if($arg && $arg =~ /Paul Magrs/) {
 			$dbh->{hash} = \@magrs;

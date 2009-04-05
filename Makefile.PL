@@ -3,7 +3,7 @@ WriteMakefile(
     NAME            => 'Data::Phrasebook',
     VERSION_FROM    => 'lib/Data/Phrasebook.pm',
     PREREQ_PM       => {
-        'Module::Pluggable' => '2.5',
+        'Module::Pluggable' => '2.7',
         'Test::More'        => '0.47',
     },
     ($] >= 5.005 ?

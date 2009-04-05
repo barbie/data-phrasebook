@@ -5,7 +5,7 @@ use Data::Phrasebook::Loader;
 use base qw( Data::Phrasebook::Debug );
 use Carp qw( croak );
 
-our $VERSION = '0.24';
+our $VERSION = '0.25';
 
 =head1 NAME
 
@@ -48,6 +48,7 @@ sub new {
     my $class = shift;
     my %hash = @_;
     $class->store(3,"$class->new IN");
+
     my $atts = \%hash;
     $class->store(4,"$class->new args=[".$class->dumper($atts)."]");
     bless $atts, $class;
@@ -122,15 +123,22 @@ sub file {
 }
 sub dict {
     my $self = shift;
-    if(@_) {
-        my $dict = shift;
-        if(!$self->{dict} || $dict ne $self->{dict}) {
-            $self->unload();
-            $self->{dict} = $dict;
-        }
-    }
 
-    $self->{dict};
+	if(@_) {
+		my $list1 = "@_";
+		my $list2 = $self->{dict} ? "@{$self->{dict}}" : '';
+
+		if($list1 ne $list2) {
+			$self->unload();
+			$self->{dict} = [@_];
+		}
+	}
+
+	return ()		unless($self->{dict} && wantarray);
+	return undef	unless($self->{dict});
+
+	return @{$self->{dict}}	if(wantarray);
+    return $self->{dict}->[0];
 }
 
 =head2 dicts

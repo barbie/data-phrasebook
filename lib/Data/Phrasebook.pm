@@ -4,7 +4,7 @@ use warnings FATAL => 'all';
 use base qw( Data::Phrasebook::Debug );
 use Carp qw( croak );
 
-our $VERSION = '0.24';
+our $VERSION = '0.25';
 
 =head1 NAME
 
@@ -126,7 +126,7 @@ sub new
     } elsif (eval "require $sub") {
         # it's a module by itself
     } else {
-        croak "Could not find appropriate class for `$sub': [$@]";
+        croak "Could not find appropriate class for '$sub': [$@]";
     }
 
     $class->store(4,"$class->new sub=[$sub]");
@@ -150,10 +150,12 @@ As an alternative, a Template Toolkit style would be passed as:
 
 =head1 DICTIONARIES
 
-Data::Phrasebook supports the use of dictionaries. However, in the Text version
-of phrasebooks they are not support. Other Loader modules available, do support
-dictionaries. Using Data::Phrasebook::Loader::Ini as an example, the dictionary
-might be laid out as:
+=head2 Simple Dictionaries
+
+Data::Phrasebook supports the use of dictionaries. See the specific Loader
+module to see how to implement the dictionary within your phrasebook. Using
+Data::Phrasebook::Loader::Ini as an example, the dictionary might be laid out
+as:
 
   [Stuff]
   language=Perl
@@ -189,6 +191,46 @@ reload. This can be done with the either (or both) of the following:
 A subsequent fetch() will then reload the file and dictionary, before
 retrieving the phrase required. However, a reload only takes place if both the
 file and the dictionary passed are not the ones currently loaded.
+
+=head2 Multiple Dictionaries
+
+As of version 0.25, the ability to provide prescendence over multiple 
+dictionaries for the same phrasebook. Using Data::Phrasebook::Loader::Ini
+again as an example, the phrasebook might be laid out as:
+
+  [AndTheOther]
+  language=Perl
+  platform=Linux
+  network=LAN
+
+  [That]
+  platform=Solaris
+  network=WLAN
+
+  [This]
+  platform=Windows
+
+The phrasebook object is then created and used as:
+  
+  my $q = Data::Phrasebook->new(
+    class  => 'Plain',
+    loader => 'Ini',
+    file   => 'phrases.ini',
+    dict   => ['This','That','AndTheOther'],
+  );
+
+  my $language = $q->fetch('language');	# retrieves 'Perl'
+  my $platform = $q->fetch('platform');	# retrieves 'Windows'
+  my $network  = $q->fetch('nework');	# retrieves 'WLAN'
+
+The first dictionary, if not specified and supported by the Loader module, is 
+still used as the default dictionary.
+
+The dictionaries can be specified, or reordered, using the object method:
+
+  $q->dict('That','AndTheOther','This');
+
+A subsequent reload will occur with the next fetch call.
 
 =head1 DEDICATION
 

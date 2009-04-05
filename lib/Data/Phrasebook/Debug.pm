@@ -3,7 +3,7 @@ use strict;
 use warnings FATAL => 'all';
 use Carp qw( croak );
 
-our $VERSION = '0.24';
+our $VERSION = '0.25';
 
 =head1 NAME
 

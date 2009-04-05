@@ -1,5 +1,13 @@
 # Changes log for Data::Phrasebook
 
+0.25    21/11/2005
+	- Added support for multiple dictionaries.
+	- Finally added the Module::Pluggable::search_path functionality
+	  (after Simon implemented my patch 9 months ago! .. I was busy m'kay)
+	- The query() method in SQL phrasebook class, can now support 
+	  replacement of parameters as well as binding of parameters.
+	  (Thanks to Tielman De Villiers for the idea and the code examples)
+
 0.24    22 Sep 2005
 	- Added sorting to keywords() for Text.pm loader.
 

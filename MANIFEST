@@ -32,4 +32,5 @@ t/90podtest.t
 t/91podcover.t
 t/BookDB.pm
 t/phrases/english.txt
+t/phrases/french.txt
 t/phrases/german.txt

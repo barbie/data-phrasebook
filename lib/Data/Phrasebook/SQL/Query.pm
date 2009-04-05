@@ -5,7 +5,7 @@ use base qw( Data::Phrasebook::Debug );
 use vars qw( $AUTOLOAD );
 use Carp qw( croak );
 
-our $VERSION = '0.24';
+our $VERSION = '0.25';
 
 =head1 NAME
 
@@ -116,7 +116,6 @@ Calls C<prepare> if necessary.
 
 sub execute
 {
-use Data::Dumper;
     my $self = shift;
     $self->store(3,"->execute IN: @_");
     my $sth = $self->sth;
@@ -198,6 +197,7 @@ sub rebind
     my $args = $self->args;
     for my $x (0..$#{$args})
     {
+		$self->store(4,"->rebind param[".($x+1).",".(${ $args->[$x] })."]");
         $sth->bind_param( $x+1, ${ $args->[$x] } )
     }
 }

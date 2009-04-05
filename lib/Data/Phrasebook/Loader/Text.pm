@@ -4,7 +4,7 @@ use warnings FATAL => 'all';
 use base qw( Data::Phrasebook::Loader::Base Data::Phrasebook::Debug );
 use Carp qw( croak );
 
-our $VERSION = '0.24';
+our $VERSION = '0.25';
 
 =head1 NAME
 
@@ -82,23 +82,36 @@ the C<dictionary> argument.
 my %phrasebook;
 
 sub load {
-    my ($class, $file, $dict) = @_;
-    $class->store(3,"->load IN");
-
+    my ($class, $file, @dict) = @_;
+    $class->store(3,"->load IN - @_");
     $file ||= $class->{parent}->file;
-    $dict ||= $class->{parent}->dict;
-    croak "No file given as argument!" unless defined $file;
+	@dict   = $class->{parent}->dict	unless(@dict);
+    croak "No file given as argument!"	unless defined $file;
 
-    $file = "$file/$dict"	if(-d $file && defined $dict);
-    croak "File [$file] not accessible!" unless -f $file && -r $file;
+	my @file;
+	if(@dict) {
+		while(@dict) {
+			my $dict = pop @dict;	# build phrases in reverse order
+			$dict = "$file/$dict";
+			croak "File [$dict] not accessible!" unless -f $dict && -r $dict;
+			push @file, $dict;
+		}
+	} else {
+		croak "File [$file] not accessible!" unless -f $file && -r $file;
+		push @file, $file;
+	}
+
 
     %phrasebook = ();   # ignore previous dictionary
-    open BOOK, $file    or return undef;
-    while(<BOOK>) {
-        my ($name,$value) = (/(.*?)=(.*)/);
-        $phrasebook{$name} = $value if($name);  # value can be blank
-    }
-    close BOOK;
+
+	for my $file (@file) {
+		open BOOK, $file    or next;
+		while(<BOOK>) {
+			my ($name,$value) = (/(.*?)=(.*)/);
+			$phrasebook{$name} = $value if($name);  # value can be blank
+		}
+		close BOOK;
+	}
 }
 
 =head2 get
@@ -143,7 +156,7 @@ sub dicts {
     $path ||= $self->{parent}->file;
     return ()	unless(-d $path && -r $path);
 
-    my @files = map { s/$path.//;$_ } grep {/^[^\.]+/} glob("$path/*");
+    my @files = map { s/$path.//;$_ } grep {/^[^\.]+.txt$/} glob("$path/*");
     return @files;
 }
 

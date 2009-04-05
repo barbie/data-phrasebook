@@ -6,7 +6,7 @@ use Carp qw( croak );
 
 use Data::Phrasebook::SQL::Query;
 
-our $VERSION = '0.24';
+our $VERSION = '0.25';
 
 =head1 NAME
 
@@ -77,10 +77,10 @@ sub dbh {
 
 =head2 query
 
-Constructs a L<Data::Phrasebook::SQL::Query> object from a template.
-Takes two arguments, the first being a name for the query. This is
-then looked for in the C<file> that was given. The second argument 
-is an optional hashref of key to value mappings.
+Constructs a L<Data::Phrasebook::SQL::Query> object from a template. Takes at 
+least one argument, this being the identifier for the query. The identifier is
+used as a key into the phrasebook C<file>. A second argument can be provided,
+which is an optional hashref of key to value mappings.
 
 If phrasebook has a YAML source looking much like the following:
 
@@ -105,49 +105,97 @@ You could write:
         author => \$author,
     } );
 
-If you ask for a template that is either not there or has no definition,
-then an error will be thrown.
+    # sql  = select class,title,author from books where author = ?
+	# args = 'Lance Parkin'
+
+In the above examples, the parameters are bound to the SQL using the bind
+parameters functionality. This is more efficient in most cases where the
+same SQL is reused with different values for fields. 
+
+However, not all SQL statements just need to bind parameters, some may require
+the ability to replace parameters, such as a field list. 
+
+    ---
+    find_author:
+        sql: select :fields from books where author = :author
+
+    my $q = $book->query( 'find_author', 
+		replace => { fields => 'class,title,author' },
+		bind    => { author => 'Lance Parkin' }
+		);
+
+    # sql  = select class,title,author from books where author = ?
+	# args = 'Lance Parkin'
+
+In all instances, if the SQL template requested does not exist or has no 
+definition, then an error will be thrown.
 
 Consult L<Data::Phrasebook::SQL::Query> for what you can then do with your
 returned object.
 
-For reference: the hashref argument, if it is given, is given to the
+For reference: the bind hashref argument, if it is given, is given to the
 query object's C<order_args> and then C<args> methods.
   
 =cut
 
 sub query {
-    my $self = shift;
-    my ($id, $args) = @_;
+    my ($self,$id,@args) = @_;
     $self->store(3,"->query IN");
 
     my $map = $self->data($id);
-    croak "No mapping for `$id'" unless($map);
+    croak "No mapping for '$id'" unless($map);
     my $sql = '';
 
     $self->store(4,"->query id=[$id]");
     $self->store(4,"->query map=[$map]");
 
     if(ref $map eq 'HASH') {
-        croak "No SQL content for `$id'." unless exists $map->{sql}
+        croak "No SQL content for '$id'." unless exists $map->{sql}
             and defined $map->{sql};
         $sql = $map->{sql};
     } else {
         $sql = $map;    # we assume sql string only
     }
 
-    my @order;
-
-    my $delim_RE = $self->delimiters();
-    $sql =~ s{$delim_RE}[
-        push @order, $1;
-        "?"
-    ]egx;
+	unshift @args, 'bind'	if(scalar(@args) == 1);	# default is to bind parameters
 
     if($self->debug) {
+        $self->store(4,"->query BEFORE methods");
+        $self->store(4,"->query sql=[$sql]");
+        $self->store(4,"->query args=[".$self->dumper(\@args)."]");
+    }
+
+    my (%args,$params,@order);
+	while(@args) {
+		# go backwards in case there are duplicate keys
+		my $args   = pop @args;
+		my $method = pop @args;
+
+		for(keys %$args) {
+			$args{$_}->{method} = $method;
+			$args{$_}->{value} = $args->{$_};
+		}
+
+		$params = $args	if($method eq 'bind');
+	}
+
+	my $delim_RE = $self->delimiters();
+	$sql =~ s{$delim_RE}[
+				{
+					if(defined $args{$1} && $args{$1}->{method} eq 'replace') {
+						$args{$1}->{value};
+					} else {
+						push @order, $1;
+						"?"
+					}
+				};
+			]egx;
+
+    if($self->debug) {
+        $self->store(4,"->query AFTER methods");
         $self->store(4,"->query sql=[$sql]");
         $self->store(4,"->query order=[".join(",",@order)."]");
-        $self->store(4,"->query args=[".$self->dumper($args)."]");
+        $self->store(4,"->query params=[".$self->dumper($params)."]");
     }
     
     my $q = Data::Phrasebook::SQL::Query->new(
@@ -155,7 +203,7 @@ sub query {
         order => \@order,
         dbh => $self->dbh,
     );
-    $q->args( $q->order_args( $args ) ) if $args;
+    $q->args( $q->order_args( $params ) ) if($params);
     $q;
 }
 

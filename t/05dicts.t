@@ -1,20 +1,18 @@
 #!/usr/bin/perl -w
 use strict;
 use lib 't';
-use vars qw( $class );
 
-use Test::More tests => 7;
+use Test::More tests => 11;
 use Data::Phrasebook;
-
-my $file = 't/02dict.ini';
 
 # load up the default dict
 my $book = Data::Phrasebook->new(class  => 'Plain',
                                  loader => 'Text',
-                                 file   => 't/phrases');
+                                 file   => 't/phrases',
+								 );
 
 my @dicts = $book->dicts();
-is(scalar(@dicts),2);
+is(scalar(@dicts),3);
 is($dicts[0],'english.txt');
 
 $book->dict('english.txt');
@@ -36,4 +34,12 @@ is_deeply(\@keywords,\@tkeys);
 
 # do we still have the second one loaded?
 is($book->fetch('foo'), "diese ist Deutsche");
+
+
+# now use multiple dictionaries
+$book->dict('english.txt','german.txt','french.txt');
+is($book->fetch('foo'), "this is English");
+is($book->fetch('bar'), "this is a test");
+is($book->fetch('baz'), "Guten Tag");
+is($book->fetch('ook'), "tout vous avez besoin d'est un phrasebook");
 
