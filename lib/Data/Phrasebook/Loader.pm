@@ -6,7 +6,7 @@ use Carp qw( croak );
 
 use Module::Pluggable   search_path => ['Data::Phrasebook::Loader'];
 
-our $VERSION = '0.27';
+our $VERSION = '0.28';
 
 =head1 NAME
 
@@ -103,7 +103,7 @@ Please see the README file.
   This library is free software; you can redistribute it and/or modify
   it under the same terms as Perl itself.
 
-The full text of the licences can be found in the F<Artistic> and
+The full text of the licenses can be found in the F<Artistic> and
 F<COPYING> files included with this module, or in L<perlartistic> and
 L<perlgpl> in Perl 5.8.1 or later.
 

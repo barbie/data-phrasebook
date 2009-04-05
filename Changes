@@ -1,5 +1,10 @@
 # Changes log for Data::Phrasebook
 
+0.28    01/03/2007
+	- Fixed META.yml typos.
+	- Added META.yml test script.
+	- Removed distribution test, as it can't handle optional 'use'
+
 0.27    22/02/2007
 	- Handwritten META.yml to conform to current specs.
 	- Changed all instances of LICENCE to LICENSE as *apparently*, to all
