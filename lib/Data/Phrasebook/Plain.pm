@@ -4,7 +4,7 @@ use warnings FATAL => 'all';
 use base qw( Data::Phrasebook::Generic Data::Phrasebook::Debug );
 use Carp qw( croak );
 
-our $VERSION = '0.21';
+our $VERSION = '0.22';
 
 =head1 NAME
 
@@ -67,7 +67,7 @@ sub fetch
 
     my $map = $self->data($id);
     croak "No mapping for `$id'" unless($map);
-    my $delim_RE = $self->delimiters || qr{ \[% \s* (\w+) \s* %\] }x;
+    my $delim_RE = $self->delimiters;
     croak "Mapping for `$id` not a string." if ref $map;
 
     if($self->debug) {
@@ -81,22 +81,6 @@ sub fetch
     ]egx;
 
     return $map;
-}
-
-=head2 delimiters
-
-Returns or sets the current delimiters for tags.
-Must be a regex with at least one capture group.
-
-This example also shows the default regex.
-
-   $q->delimiters( qr{ \[% \s* (\w+) \s* %\] }x );
-
-=cut
-
-sub delimiters {
-    my $self = shift;
-    @_ ? $self->{delimiters} = shift : $self->{delimiters};
 }
 
 1;

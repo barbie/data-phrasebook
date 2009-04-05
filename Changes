@@ -1,5 +1,11 @@
 # Changes log for Data::Phrasebook
 
+0.22    13 Jun 2005
+	- POD suggestions (Jon Allen).
+	- delimiters now a generic class behaviour.
+	- provide support for returning the list of dictionaries available
+	  (suggested by Jon Allen).
+
 0.21    13 May 2005
         - More POD to explain Classes and Dictionaries.
         - file & dictionary reloading.

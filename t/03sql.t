@@ -4,7 +4,7 @@ use lib 't';
 use vars qw( $class );
 use BookDB;
 
-use Test::More tests => 7;
+use Test::More tests => 8;
 
 # ------------------------------------------------------------------------
 
@@ -23,6 +23,9 @@ my $file = 't/03phrases.txt';
         file => $file,
         dbh => $dbh,
     );
+    isa_ok( $obj => 'Data::Phrasebook::SQL' );
+
+    $obj->delimiters( qr{:(\w+)} );
     my $author = 'Lance Parkin';
     my $q = $obj->query( 'find_author', {
             author => \$author,

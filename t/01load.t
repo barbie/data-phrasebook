@@ -30,6 +30,8 @@ my $file2 = 't/01phrases2.txt';
     is( $obj->file() => $file , 'Get file works');
 
     {
+        $obj->delimiters( qr{ \[% \s+ (\w+) \s+ %\] }x );
+
         my $str = $obj->fetch( 'foo', {
                 my => "Iain's",
                 place => 'locale',

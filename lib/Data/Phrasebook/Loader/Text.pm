@@ -4,7 +4,7 @@ use warnings FATAL => 'all';
 use base qw( Data::Phrasebook::Loader::Base Data::Phrasebook::Debug );
 use Carp qw( croak );
 
-our $VERSION = '0.21';
+our $VERSION = '0.22';
 
 =head1 NAME
 
@@ -20,8 +20,12 @@ Data::Phrasebook::Loader::Text - Absract your phrases with plain text files.
         file   => 'phrases.txt',
     );
 
+    # use default delimiters (:variable)
+    my $phrase = $q->fetch($keyword,{variable => 'substitute'});
+
+    # use Template Toolkit style delimiters
     $q->delimiters( qr{ \[% \s* (\w+) \s* %\] }x );
-    my $phrase = $q->fetch($keyword);
+    my $phrase = $q->fetch($keyword,{variable => 'substitute'});
 
 =head1 ABSTRACT
 
@@ -40,7 +44,7 @@ complete dictionary.
 
 An example plain text file:
 
-  foo=Welcome to [% my %] world. It is a nice [% place %].
+  foo=Welcome to :my world. It is a nice :place.
 
 Within the phrase text placeholders can be used, which are then replaced with 
 the appropriate values once the get() method is called. The default style of
@@ -58,19 +62,35 @@ See that module for other available methods and documentation.
 
 Given a C<file>, load it. C<file> must contain a valid phrase map.
 
+   my $file = 'english.txt';
    $loader->load( $file );
 
 This method is used internally by L<Data::Phrasebook::Generic>'s
 C<data> method, to initialise the data store.
+
+To utilise the dictionary framework for a Plain Text phrasebook, the idea is
+to use a directory of files, where the directory is passed via the C<file>
+argument and the dictionary, the specific name of the file, is passed via
+the C<dictionary> argument.
+
+   my $file = '/tmp/phrasebooks';
+   my $dictionary = 'english.txt';
+   $loader->load( $file, $dictionary );
 
 =cut
 
 my %phrasebook;
 
 sub load {
-    my ($class, $file) = @_;
+    my ($class, $file, $dict) = @_;
     $class->store(3,"->load IN");
+
+    $file ||= $class->{file};
+    $dict ||= $class->{dict};
     croak "No file given as argument!" unless defined $file;
+
+    $file = "$file/$dict"	if(-d $file && defined $dict);
+    croak "File [$file] not accessible!" unless -f $file && -r $file;
 
     open BOOK, $file    or return undef;
     while(<BOOK>) {
@@ -96,6 +116,34 @@ sub get {
         $class->store(4,"->get phrase=[".($phrasebook{$key} || 'undef')."]");
     }
     return $phrasebook{$key};
+}
+
+=head2 dicts
+
+Having instantiated the C<Data::Phrasebook> object class, and using the C<file>
+attribute as a directory path. The object can return a list of the current
+dictionaries available as:
+
+  my $pb = Data::Phrasebook->new(
+  	loader => 'Text',
+	file   => '/tmp/phrasebooks',
+  );
+
+  my @dicts = $pb->dicts;
+
+or
+
+  my @dicts = $pb->dicts( $path );
+
+=cut
+
+sub dicts {
+    my ($self,$path) = @_;
+    $path ||= $self->{file};
+    return ()	unless(-d $path && -r $path);
+
+    my @files = map { s/$path.//;$_ } grep {/^[^\.]+/} glob("$path/*");
+    return @files;
 }
 
 1;

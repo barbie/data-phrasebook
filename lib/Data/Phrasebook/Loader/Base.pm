@@ -4,7 +4,7 @@ use warnings FATAL => 'all';
 use base qw( Data::Phrasebook::Debug );
 use Carp qw( croak );
 
-our $VERSION = '0.21';
+our $VERSION = '0.22';
 
 =head1 NAME
 
@@ -28,12 +28,17 @@ C<new> merely creates a new instance. Nothing exciting.
 =head2 load
 
 C<load> is an abstract method here. You must define your own
-in your subclass.
+in your subclass. Loads the phrasebook.
 
 =head2 get
 
 C<get> is an abstract method here. You must define your own
-in your subclass.
+in your subclass. Gets the phrase.
+
+=head2 dicts
+
+C<dicts> is an abstract method here. You must define your own
+in your subclass. Returns the list of dictionaries available.
 
 =head1 CONSTRUCTOR
 
@@ -53,8 +58,9 @@ sub new {
     return $atts;
 }
 
-sub load { return undef }
-sub get  { return undef }
+sub load  { return undef }
+sub get   { return undef }
+sub dicts { return () }
 
 1;
 

@@ -4,7 +4,7 @@ use warnings FATAL => 'all';
 use base qw( Data::Phrasebook::Debug );
 use Carp qw( croak );
 
-our $VERSION = '0.21';
+our $VERSION = '0.22';
 
 =head1 NAME
 
@@ -32,17 +32,50 @@ Data::Phrasebook - Abstract your queries!
 Data::Phrasebook is a collection of modules for accessing phrasebooks from
 various data sources.
 
+=head1 PHRASEBOOKS
+
+To explain what phrasebooks are it is worth reading Rani Pinchuk's
+(author of L<Class::Phrasebook>) article on Perl.com:
+
+L<http://www.perl.com/pub/a/2002/10/22/phrasebook.html>
+
+Common uses of phrasebooks are in handling error codes, accessing databases
+via SQL queries and written language phrases. Examples are the mime.types
+file and the hosts file, both of which use a simple phrasebook design.
+
+Unfortunately Class::Phrasebook is a complete work and not a true class
+based framework. If you can't install XML libraries, you cannot use it.
+This distribution is a collaboration between Iain Truskett and myself to
+create an extendable and class based framework for implementing phrasebooks.
+
+=head1 CLASSES
+
+In creating a phrasebook object, a class type is required. This class defines
+the nature of the phrasebook or the behaviours associated with it. Currently
+there are two classes, Plain and SQL.
+
+The Plain class is the default class, and allows retrieval of phrases via the
+fetch() method. The fetch() simply returns the phrase that maps to the given
+keyword.
+
+The SQL class allows specific database handling. Phrases are retrieved via the
+query() method. The query() method internally retrieves the SQL phrase, then
+returns the statement handler object, which the user can then perform a 
+prepare/execute/fetch/finish sequence on. For more details see
+Data::Phrasebook::SQL.
+
 =head1 CONSTRUCTOR
 
 =head2 new
 
 The arguments to new depend upon the exact class you're creating.
 
-The default class is C<Plain>.
+The default class is C<Plain> and only requires the Loader arguments. The
+C<SQL> class requires a database handle as well as the Loader arguments.
 
-The C<class> argument defines the class type you wish to utilise. Currently
-there are C<Plain> and C<SQL> classes available. The C<class> argument
-is treated like this, using C<Foobar> as the sample value:
+The C<class> argument defines the object class of the phrasebook and the
+behaviours that can be associated with it. Using C<Foobar> as a fake class,
+the class module is searched for in the following order:
 
 =over 4
 
@@ -80,12 +113,12 @@ sub new
     my %args = @_;
 
     my $debug = delete $args{debug} || 0;
-	$class->debug($debug);
+    $class->debug($debug);
 
-	$class->store(3,"$class->new IN");
-	$class->store(4,"$class->new args=[".$class->dumper(\%args)."]");
+    $class->store(3,"$class->new IN");
+    $class->store(4,"$class->new args=[".$class->dumper(\%args)."]");
 
-	my $sub = delete $args{class} || 'Plain';
+    my $sub = delete $args{class} || 'Plain';
     if (eval "require ${class}::$sub") {
         $sub = $class."::$sub";
     } elsif (eval "require Data::Phrasebook::$sub") {
@@ -96,7 +129,7 @@ sub new
         croak "Could not find appropriate class for `$sub': [$@]";
     }
 
-	$class->store(4,"$class->new sub=[$sub]");
+    $class->store(4,"$class->new sub=[$sub]");
     my $self = $sub->new( %args );
 }
 
@@ -104,20 +137,16 @@ sub new
 
 __END__
 
-=head1 CLASSES
+=head1 DELIMITERS
 
-In creating a phrasebook object, a class type is required. This class defines
-the nature of the phrasebook. Currently there are two classes, Plain and SQL.
+Delimiters allow for variable substitution in the phrase. The default style
+is ':variable', which would be passed as:
 
-The Plain class is the default class, and allows retrieval of phrases via the
-fetch() method. The fetch() simply returns the phrase that maps to the given
-keyword.
+    $q->delimiters( qr{ :(\w+) }x );
 
-The SQL class allows specific database handling. Phrases are retrieved via the
-query() method. The query() method internally retrieves the SQL phrase, then
-returns the statement handler object, which the user can then perform a 
-prepare/execute/fetch/finish sequence on. For more details see
-Data::Phrasebook::SQL.
+As an alternative, a Template Toolkit style would be passed as:
+
+    $q->delimiters( qr{ \[% \s* (\w+) \s* %\] }x );
 
 =head1 DICTIONARIES
 
@@ -147,7 +176,7 @@ The phrasebook object is then created and used as:
 
 The former is from the default (first) dictionary, and the second is from the
 named dictionary ('Nonsense'). If a phrase is not found in the named dictionary
-an attempt is made to find it in the default dictionary. Other wise undef will
+an attempt is made to find it in the default dictionary. Otherwise undef will
 be returned.
 
 Once a dictionary or file is specified, changing either requires reloading. As
@@ -160,22 +189,6 @@ reload. This can be done with the either (or both) of the following:
 A subsequent fetch() will then reload the file and dictionary, before
 retrieving the phrase required. However, a reload only takes place if both the
 file and the dictionary passed are not the ones currently loaded.
-
-=head1 PHRASEBOOKS
-
-To explain what phrasebooks are it is worth reading Rani Pinchuk's
-(author of L<Class::Phrasebook>) article on Perl.com:
-
-L<http://www.perl.com/pub/a/2002/10/22/phrasebook.html>
-
-Common uses of phrasebooks are in handling error codes, accessing databases
-via SQL queries and written language phrases. Examples are the mime.types
-file and the hosts file, both of which use a simple phrasebook design.
-
-Unfortunately Class::Phrasebook is a complete work and not a true class
-based framework. If you can't install XML libraries, you cannot use it.
-This distribution is a collaboration between Iain Truskett and myself to
-create an extendable and class based framework for implementing phrasebooks.
 
 =head1 DEDICATION
 

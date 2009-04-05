@@ -6,7 +6,7 @@ use Carp qw( croak );
 
 use Data::Phrasebook::SQL::Query;
 
-our $VERSION = '0.21';
+our $VERSION = '0.22';
 
 =head1 NAME
 
@@ -137,7 +137,9 @@ sub query {
     }
 
     my @order;
-    $sql =~ s{:(\w+)}[
+
+    my $delim_RE = $self->delimiters();
+    $sql =~ s{$delim_RE}[
         push @order, $1;
         "?"
     ]egx;

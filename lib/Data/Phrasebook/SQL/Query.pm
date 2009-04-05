@@ -5,7 +5,7 @@ use base qw( Data::Phrasebook::Debug );
 use vars qw( $AUTOLOAD );
 use Carp qw( croak );
 
-our $VERSION = '0.21';
+our $VERSION = '0.22';
 
 =head1 NAME
 
@@ -116,19 +116,21 @@ Calls C<prepare> if necessary.
 
 sub execute
 {
+use Data::Dumper;
     my $self = shift;
-    $self->store(3,"->execute IN");
+    $self->store(3,"->execute IN: @_");
     my $sth = $self->sth;
-    my @args;
-    @args = $self->order_args( @_ ) if @_;
+    my @args = @_ ? $self->order_args( @_ ) : ();
+    @args = ()	if(@args && !defined $args[0]);
     $sth = $self->prepare() unless $sth;
-    if (@args) {
-        $self->store(4,"->execute args[".join(",",@args)."]");
-        return $sth->execute( map { $$_ } @args );
-    } else {
+
+    unless(@args) {
         $self->rebind;
         return $sth->execute();
     }
+
+    $self->store(4,"->execute args[".join(",",map {$_||'undef'} @args)."]");
+    return $sth->execute( map { $$_ } @args );
 }
 
 =head2 order_args

@@ -5,7 +5,7 @@ use Data::Phrasebook::Loader;
 use base qw( Data::Phrasebook::Debug );
 use Carp qw( croak );
 
-our $VERSION = '0.21';
+our $VERSION = '0.22';
 
 =head1 NAME
 
@@ -51,6 +51,10 @@ sub new {
     my $atts = \%hash;
     $class->store(4,"$class->new args=[".$class->dumper($atts)."]");
     bless $atts, $class;
+
+#    $atts->{delimiters} = qr{ \[% \s* (\w+) \s* %\] }x;
+    $atts->{delimiters} = qr{ :(\w+) }x;
+
     return $atts;
 }
 
@@ -98,7 +102,7 @@ sub loader {
 sub unload {
     my $self = shift;
     $self->{loaded} = undef;
-        $self->{'loaded-data'} = undef;
+    $self->{'loaded-data'} = undef;
 }
 
 sub loaded {
@@ -127,6 +131,29 @@ sub dict {
     }
 
     $self->{dict};
+}
+
+=head2 dicts
+
+Returns the dictionaries available.
+
+=cut 
+
+sub dicts {
+    my $self = shift;
+    my $loader = $self->loaded;
+    if(!defined $loader) {
+        if($self->debug) {
+            $self->store(4,"->dicts loader=[".($self->loader||'undef')."]");
+        }
+        $loader = Data::Phrasebook::Loader->new('class' => $self->loader);
+    }
+
+    # just in case it doesn't use D::P::Loader::Base
+    croak("dicts() unsupported in plugin")
+    	unless($loader->can("dicts"));
+
+    $loader->dicts($self->file);
 }
 
 =head2 data
@@ -161,6 +188,26 @@ sub data
     }
 
     $self->{'loaded-data'}->{$id} ||= do { $loader->get( $id ) };
+}
+
+=head2 delimiters
+
+Returns or sets the current delimiters for substitution variables. Must be a
+regular expression with at least one capture group.
+
+The example below shows the default ':variable' style regex.
+
+   $q->delimiters( qr{ :(\w+) }x );
+
+The example below shows a Template Toolkit style regex.
+
+   $q->delimiters( qr{ \[% \s* (\w+) \s* %\] }x );
+
+=cut
+
+sub delimiters {
+    my $self = shift;
+    @_ ? $self->{delimiters} = shift : $self->{delimiters};
 }
 
 1;
