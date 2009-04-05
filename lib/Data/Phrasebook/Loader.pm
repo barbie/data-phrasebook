@@ -6,11 +6,11 @@ use Carp qw( croak );
 
 use Module::Pluggable	search_path => ['Data::Phrasebook::Loader'];
 
-our $VERSION = '0.18';
+our $VERSION = '0.19';
 
 =head1 NAME
 
-Data::Phrasebook::Loader - abstract loader class
+Data::Phrasebook::Loader - Plugin Loader module
 
 =head1 SYNOPSIS
 
@@ -18,14 +18,7 @@ Data::Phrasebook::Loader - abstract loader class
 
 =head1 DESCRIPTION
 
-C<Data::Phrasebook::Loader> acts as a base class and autoloader
-for phrasebook plugins.
-
-=head1 INHERITABLE METHODS
-
-=head2 new
-
-C<new> merely creates a new instance of the specified loader class.
+C<Data::Phrasebook::Loader> acts as an autoloader for phrasebook plugins.
 
 =head1 CONSTRUCTOR
 
@@ -37,11 +30,11 @@ the C<new> method of the appropriate class.
 
 If no class is specified the default class of 'Text' is used.
 
-    my $loader = Data::Phrasebook::Loader->new();
+  my $loader = Data::Phrasebook::Loader->new();
 
-    my $loader = Data::Phrasebook::Loader->new(
-        class => 'Text',
-    );
+  OR
+
+  my $loader = Data::Phrasebook::Loader->new( class => 'Text' );
 
 =cut
 
@@ -83,29 +76,34 @@ __END__
 
 L<Data::Phrasebook>.
 
-Known implementations: 
-  L<Data::Phrasebook::Loader::Text>
-  L<Data::Phrasebook::Loader::YAML>
-  L<Data::Phrasebook::Loader::Ini>
-  L<Data::Phrasebook::Loader::XML>
-  L<Data::Phrasebook::Loader::DBI>
+=head2 Known implementations
+
+L<Data::Phrasebook::Loader::Text>,
+L<Data::Phrasebook::Loader::YAML>,
+L<Data::Phrasebook::Loader::Ini>,
+L<Data::Phrasebook::Loader::XML>,
+L<Data::Phrasebook::Loader::DBI>.
+
+=head1 SUPPORT
+
+Please see the README file.
 
 =head1 AUTHOR
 
-Original author: Iain Campbell Truskett (16.07.1979 - 29.12.2003).
+Original author: Iain Campbell Truskett (16.07.1979 - 29.12.2003)
 
-Maintainer: Barbie <barbie@cpan.org>.
+Maintainer: Barbie <barbie@cpan.org> since January 2004.
 
 =head1 LICENCE AND COPYRIGHT
 
-  Copyright E<copy> Iain Truskett, 2003. All rights reserved.
-  Copyright E<copy> Barbie, 2004-2005. All rights reserved.
+  Copyright (C) Iain Truskett, 2003. All rights reserved.
+  Copyright (C) Barbie, 2004-2005. All rights reserved.
 
   This library is free software; you can redistribute it and/or modify
   it under the same terms as Perl itself.
 
-  The full text of the licences can be found in the F<Artistic> and
-  F<COPYING> files included with this module, or in L<perlartistic> and
-  L<perlgpl> in Perl 5.8.1 or later.
+The full text of the licences can be found in the F<Artistic> and
+F<COPYING> files included with this module, or in L<perlartistic> and
+L<perlgpl> in Perl 5.8.1 or later.
 
 =cut

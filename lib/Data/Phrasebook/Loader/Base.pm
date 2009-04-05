@@ -5,15 +5,15 @@ use warnings;# FATAL => 'all';
 use base qw( Data::Phrasebook::Debug );
 use Carp qw( croak );
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 =head1 NAME
 
-Data::Phrasebook::Loader::Base - base loader class
+Data::Phrasebook::Loader::Base - Base loader plugin class.
 
 =head1 SYNOPSIS
 
-N/A
+  $class->new( %attributes );
 
 =head1 DESCRIPTION
 
@@ -25,8 +25,6 @@ plugins.
 =head2 new
 
 C<new> merely creates a new instance. Nothing exciting.
-Override the C<init> method to augment functionality, but
-be sure to call this one.
 
 =head2 load
 
@@ -42,17 +40,8 @@ in your subclass.
 
 =head2 new
 
-C<new> takes one optional named argument: the class. It returns a new
-instance to the class. Any further arguments to C<new> are given to
-the C<new> method of the appropriate class.
-
-If no class is specified the default class of 'Text' is used.
-
-    my $loader = Data::Phrasebook::Loader->new();
-
-    my $xmlloader = Data::Phrasebook::Loader->new(
-        class => 'XML',
-    );
+C<new> instantiates the plugin object, creating a blessed hash of any
+attributes passed as arguments.
 
 =cut
 
@@ -77,23 +66,24 @@ __END__
 L<Data::Phrasebook>,
 L<Data::Phrasebook::Loader>.
 
+=head1 SUPPORT
+
+Please see the README file.
+
 =head1 AUTHOR
 
-Barbie, C< <<barbie@cpan.org>> >
-for Miss Barbell Productions, L<http://www.missbarbell.co.uk>
+  Barbie, <barbie@cpan.org>
+  for Miss Barbell Productions <http://www.missbarbell.co.uk>.
 
-Birmingham Perl Mongers, L<http://birmingham.pm.org/>
+=head1 LICENCE AND COPYRIGHT
 
-=head1 COPYRIGHT AND LICENSE
+  Copyright (C) 2004-2005 Barbie for Miss Barbell Productions.
 
-  Copyright (C) 2005 Barbie for Miss Barbell Productions
-  All Rights Reserved.
+  This library is free software; you can redistribute it and/or modify
+  it under the same terms as Perl itself.
 
-  This module is free software; you can redistribute it and/or 
-  modify it under the same terms as Perl itself.
-
-  The full text of the licences can be found in the F<Artistic> and
-  F<COPYING> files included with this module, or in L<perlartistic> and
-  L<perlgpl> in Perl 5.8.1 or later.
+The full text of the licences can be found in the F<Artistic> and
+F<COPYING> files included with this module, or in L<perlartistic> and
+L<perlgpl> in Perl 5.8.1 or later.
 
 =cut

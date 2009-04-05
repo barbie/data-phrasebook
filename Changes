@@ -1,7 +1,10 @@
 # Changes log for Data::Phrasebook
 
+0.20    03 Mar 2005
+	- POD updates
+
 0.19    02 Mar 2005
-		- Removed Test::MockObject from tests. No longer needed.
+	- Removed Test::MockObject from tests. No longer needed.
 
 0.18    01 Mar 2005
         - Name change from Phrasebook to Data::Phrasebook.

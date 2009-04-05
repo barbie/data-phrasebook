@@ -4,7 +4,7 @@ use warnings FATAL => 'all';
 use base qw( Data::Phrasebook::Debug );
 use Carp qw( croak );
 
-our $VERSION = '0.19';
+our $VERSION = '0.20';
 
 =head1 NAME
 
@@ -127,19 +127,18 @@ sub new
 
 1;
 
-
 __END__
 
 =head1 SEE ALSO
 
-	L<Data::Phrasebook::Plain>
-	L<Data::Phrasebook::SQL>
-	L<Data::Phrasebook::Debug>
-
-	L<Data::Phrasebook::Loader>
-	L<Data::Phrasebook::Loader::Text>
-	
-	L<Data::Phrasebook::Generic> may also prove informative.
+L<Data::Phrasebook::Plain>,
+L<Data::Phrasebook::SQL>,
+L<Data::Phrasebook::SQL::Query>,
+L<Data::Phrasebook::Debug>,
+L<Data::Phrasebook::Generic>,
+L<Data::Phrasebook::Loader>,
+L<Data::Phrasebook::Loader::Text>,
+L<Data::Phrasebook::Loader::Base>.
 
 =head1 SUPPORT
 
@@ -153,14 +152,14 @@ Maintainer: Barbie <barbie@cpan.org> since January 2004.
 
 =head1 LICENCE AND COPYRIGHT
 
-  Copyright E<copy> Iain Truskett, 2003. All rights reserved.
-  Copyright E<copy> Barbie, 2004-2005. All rights reserved.
+  Copyright (C) Iain Truskett, 2003. All rights reserved.
+  Copyright (C) Barbie, 2004-2005. All rights reserved.
 
   This library is free software; you can redistribute it and/or modify
   it under the same terms as Perl itself.
 
-  The full text of the licences can be found in the F<Artistic> and
-  F<COPYING> files included with this module, or in L<perlartistic> and
-  L<perlgpl> in Perl 5.8.1 or later.
+The full text of the licences can be found in the F<Artistic> and
+F<COPYING> files included with this module, or in L<perlartistic> and
+L<perlgpl> in Perl 5.8.1 or later.
 
 =cut

@@ -4,11 +4,11 @@ use warnings FATAL => 'all';
 use base qw( Data::Phrasebook::Generic Data::Phrasebook::Debug );
 use Carp qw( croak );
 
-our $VERSION = '0.18';
+our $VERSION = '0.19';
 
 =head1 NAME
 
-Data::Phrasebook::Plain - Simplistic phrasebooking.
+Data::Phrasebook::Plain - The Simple Phrasebook Model.
 
 =head1 SYNOPSIS
 
@@ -22,8 +22,8 @@ Data::Phrasebook::Plain - Simplistic phrasebooking.
 
     my $r = Data::Phrasebook->new( file => 'phrases.txt' );
 
-   $q->delimiters( qr{ \[% \s* (\w+) \s* %\] }x );
-	my $phrase = $q->fetch($keyword);
+    $q->delimiters( qr{ \[% \s* (\w+) \s* %\] }x );
+    my $phrase = $q->fetch($keyword);
 
 =head1 DESCRIPTION
 
@@ -102,24 +102,28 @@ __END__
 =head1 SEE ALSO
 
 L<Data::Phrasebook>, 
-L<Data::Phrasebook::Generic>
+L<Data::Phrasebook::Generic>.
+
+=head1 SUPPORT
+
+Please see the README file.
 
 =head1 AUTHOR
 
-Original author: Iain Campbell Truskett (16.07.1979 - 29.12.2003).
+Original author: Iain Campbell Truskett (16.07.1979 - 29.12.2003)
 
-Maintainer: Barbie <barbie@cpan.org>.
+Maintainer: Barbie <barbie@cpan.org> since January 2004.
 
 =head1 LICENCE AND COPYRIGHT
 
-  Copyright E<copy> Iain Truskett, 2003. All rights reserved.
-  Copyright E<copy> Barbie, 2004-2005. All rights reserved.
+  Copyright (C) Iain Truskett, 2003. All rights reserved.
+  Copyright (C) Barbie, 2004-2005. All rights reserved.
 
   This library is free software; you can redistribute it and/or modify
   it under the same terms as Perl itself.
 
-  The full text of the licences can be found in the F<Artistic> and
-  F<COPYING> files included with this module, or in L<perlartistic> and
-  L<perlgpl> in Perl 5.8.1 or later.
+The full text of the licences can be found in the F<Artistic> and
+F<COPYING> files included with this module, or in L<perlartistic> and
+L<perlgpl> in Perl 5.8.1 or later.
 
 =cut

@@ -5,7 +5,7 @@ use Data::Phrasebook::Loader;
 use base qw( Data::Phrasebook::Debug );
 use Carp qw( croak );
 
-our $VERSION = '0.18';
+our $VERSION = '0.19';
 
 =head1 NAME
 
@@ -146,22 +146,26 @@ __END__
 L<Data::Phrasebook>, 
 L<Data::Phrasebook::Loader>.
 
+=head1 SUPPORT
+
+Please see the README file.
+
 =head1 AUTHOR
 
-Original author: Iain Campbell Truskett (16.07.1979 - 29.12.2003).
+Original author: Iain Campbell Truskett (16.07.1979 - 29.12.2003)
 
-Maintainer: Barbie <barbie@cpan.org>.
+Maintainer: Barbie <barbie@cpan.org> since January 2004.
 
 =head1 LICENCE AND COPYRIGHT
 
-  Copyright E<copy> Iain Truskett, 2003. All rights reserved.
-  Copyright E<copy> Barbie, 2004-2005. All rights reserved.
+  Copyright (C) Iain Truskett, 2003. All rights reserved.
+  Copyright (C) Barbie, 2004-2005. All rights reserved.
 
   This library is free software; you can redistribute it and/or modify
   it under the same terms as Perl itself.
 
-  The full text of the licences can be found in the F<Artistic> and
-  F<COPYING> files included with this module, or in L<perlartistic> and
-  L<perlgpl> in Perl 5.8.1 or later.
+The full text of the licences can be found in the F<Artistic> and
+F<COPYING> files included with this module, or in L<perlartistic> and
+L<perlgpl> in Perl 5.8.1 or later.
 
 =cut

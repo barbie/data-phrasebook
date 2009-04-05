@@ -5,21 +5,27 @@ use base qw( Data::Phrasebook::Debug );
 use vars qw( $AUTOLOAD );
 use Carp qw( croak );
 
-our $VERSION = '0.18';
+our $VERSION = '0.19';
 
 =head1 NAME
 
-Data::Phrasebook::SQL::Query - A query from a phrasebook.
+Data::Phrasebook::SQL::Query - Query Extension to the SQL/DBI Phrasebook Model.
 
 =head1 SYNOPSIS
 
+    my $q = $book->query( 'find_author' );
+
 =head1 DESCRIPTION
+
+An extension to the SQL class to specifically handle the DBI interface for
+each query requested.
 
 =head1 CONSTRUCTOR
 
 =head2 new
 
-Don't use this directly. Let L<Data::Phrasebook::SQL> create it for you.
+Not to be accessed directly, but via the parent L<Data::Phrasebook>, by 
+specifying the class as SQL.
 
 =head1 METHODS
 
@@ -195,10 +201,13 @@ Any method not mentioned above is given to the statement
 handle.
 
 All these delegations will implicitly call C<prepare>.
-Any C<fetch*> methods will additionally call C<execute>
-unless the statement handle is already active.
 
 =cut
+
+# Currently the following is not true, but will be fixed at some point:
+#
+#Any C<fetch*> methods will additionally call C<execute>
+#unless the statement handle is already active.
 
 sub _call_other
 {
@@ -237,22 +246,26 @@ __END__
 L<Data::Phrasebook>, 
 L<Data::Phrasebook::SQL>.
 
+=head1 SUPPORT
+
+Please see the README file.
+
 =head1 AUTHOR
 
-Original author: Iain Campbell Truskett (16.07.1979 - 29.12.2003).
+Original author: Iain Campbell Truskett (16.07.1979 - 29.12.2003)
 
-Maintainer: Barbie <barbie@cpan.org>.
+Maintainer: Barbie <barbie@cpan.org> since January 2004.
 
 =head1 LICENCE AND COPYRIGHT
 
-  Copyright E<copy> Iain Truskett, 2003. All rights reserved.
-  Copyright E<copy> Barbie, 2004-2005. All rights reserved.
+  Copyright (C) Iain Truskett, 2003. All rights reserved.
+  Copyright (C) Barbie, 2004-2005. All rights reserved.
 
   This library is free software; you can redistribute it and/or modify
   it under the same terms as Perl itself.
 
-  The full text of the licences can be found in the F<Artistic> and
-  F<COPYING> files included with this module, or in L<perlartistic> and
-  L<perlgpl> in Perl 5.8.1 or later.
+The full text of the licences can be found in the F<Artistic> and
+F<COPYING> files included with this module, or in L<perlartistic> and
+L<perlgpl> in Perl 5.8.1 or later.
 
 =cut

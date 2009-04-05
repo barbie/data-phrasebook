@@ -4,7 +4,7 @@ use warnings FATAL => 'all';
 use base qw( Data::Phrasebook::Loader::Base Data::Phrasebook::Debug );
 use Carp qw( croak );
 
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 
 =head1 NAME
 
@@ -20,8 +20,8 @@ Data::Phrasebook::Loader::Text - Absract your phrases with plain text files.
         file   => 'phrases.txt',
     );
 
-   $q->delimiters( qr{ \[% \s* (\w+) \s* %\] }x );
-	my $phrase = $q->fetch($keyword);
+    $q->delimiters( qr{ \[% \s* (\w+) \s* %\] }x );
+    my $phrase = $q->fetch($keyword);
 
 =head1 ABSTRACT
 
@@ -30,7 +30,7 @@ plain text files.
 
 =head1 DESCRIPTION
 
-This class loader implements phrasebook patterns using plain text files. 
+This loader plugin implements phrasebook patterns using plain text files. 
 
 Phrases can be contained within one or more dictionaries, with each phrase 
 accessible via a unique key. Phrases may contain placeholders, please see 
@@ -104,25 +104,26 @@ __END__
 
 =head1 SEE ALSO
 
-L<Data::Phrasebook>
+L<Data::Phrasebook>.
+
+=head1 SUPPORT
+
+Please see the README file.
 
 =head1 AUTHOR
 
-Barbie, C< <<barbie@cpan.org>> >
-for Miss Barbell Productions, L<http://www.missbarbell.co.uk>
+  Barbie, <barbie@cpan.org>
+  for Miss Barbell Productions <http://www.missbarbell.co.uk>.
 
-Birmingham Perl Mongers, L<http://birmingham.pm.org/>
+=head1 LICENCE AND COPYRIGHT
 
-=head1 COPYRIGHT AND LICENSE
+  Copyright (C) 2004-2005 Barbie for Miss Barbell Productions.
 
-  Copyright (C) 2004-2005 Barbie for Miss Barbell Productions
-  All Rights Reserved.
+  This library is free software; you can redistribute it and/or modify
+  it under the same terms as Perl itself.
 
-  This module is free software; you can redistribute it and/or 
-  modify it under the same terms as Perl itself.
-
-  The full text of the licences can be found in the F<Artistic> and
-  F<COPYING> files included with this module, or in L<perlartistic> and
-  L<perlgpl> in Perl 5.8.1 or later.
+The full text of the licences can be found in the F<Artistic> and
+F<COPYING> files included with this module, or in L<perlartistic> and
+L<perlgpl> in Perl 5.8.1 or later.
 
 =cut

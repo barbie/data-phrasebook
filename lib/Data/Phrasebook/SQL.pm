@@ -6,11 +6,11 @@ use Carp qw( croak );
 
 use Data::Phrasebook::SQL::Query;
 
-our $VERSION = '0.18';
+our $VERSION = '0.19';
 
 =head1 NAME
 
-Data::Phrasebook::SQL - DBI integration with phrasebooks
+Data::Phrasebook::SQL - The SQL/DBI Phrasebook Model.
 
 =head1 SYNOPSIS
 
@@ -47,9 +47,10 @@ executes your queries appropriately.
 
 =head1 CONSTRUCTOR
 
-=head1 new
+=head2 new
 
-Do not use directory, access via the parent L<Data::Phrasebook>.
+Not to be accessed directly, but via the parent L<Data::Phrasebook>, by 
+specifying the class as SQL.
 
 Additional arguments to those described in L<Data::Phrasebook::Generic> are:
 
@@ -77,11 +78,9 @@ sub dbh {
 =head2 query
 
 Constructs a L<Data::Phrasebook::SQL::Query> object from a template.
-
 Takes two arguments, the first being a name for the query. This is
-looked for in the C<file> that was given.
-
-The second argument is an optional hashref of key to value mappings.
+then looked for in the C<file> that was given. The second argument 
+is an optional hashref of key to value mappings.
 
 If phrasebook has a YAML source looking much like the following:
 
@@ -93,17 +92,17 @@ You could write:
 
     my $q = $book->query( 'find_author' );
 
-Or:
+    OR
 
     my $q = $book->query( 'find_author', {
         author => 'Lance Parkin'
     } );
 
-Or:
+    OR
 
     my $author = 'Lance Parkin';
     my $q = $book->query( 'find_author', {
-        author => \$scalar,
+        author => \$author,
     } );
 
 If you ask for a template that is either not there or has no definition,
@@ -169,22 +168,26 @@ L<Data::Phrasebook>,
 L<Data::Phrasebook::Generic>,
 L<Data::Phrasebook::SQL::Query>.
 
+=head1 SUPPORT
+
+Please see the README file.
+
 =head1 AUTHOR
 
-Original author: Iain Campbell Truskett (16.07.1979 - 29.12.2003).
+Original author: Iain Campbell Truskett (16.07.1979 - 29.12.2003)
 
-Maintainer: Barbie <barbie@cpan.org>.
+Maintainer: Barbie <barbie@cpan.org> since January 2004.
 
 =head1 LICENCE AND COPYRIGHT
 
-  Copyright E<copy> Iain Truskett, 2003. All rights reserved.
-  Copyright E<copy> Barbie, 2004-2005. All rights reserved.
+  Copyright (C) Iain Truskett, 2003. All rights reserved.
+  Copyright (C) Barbie, 2004-2005. All rights reserved.
 
   This library is free software; you can redistribute it and/or modify
   it under the same terms as Perl itself.
 
-  The full text of the licences can be found in the F<Artistic> and
-  F<COPYING> files included with this module, or in L<perlartistic> and
-  L<perlgpl> in Perl 5.8.1 or later.
+The full text of the licences can be found in the F<Artistic> and
+F<COPYING> files included with this module, or in L<perlartistic> and
+L<perlgpl> in Perl 5.8.1 or later.
 
 =cut
