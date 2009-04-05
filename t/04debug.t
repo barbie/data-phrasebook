@@ -1,6 +1,5 @@
 #!/usr/bin/perl -w
 use strict;
-use lib 't';
 use vars qw( $class );
 
 use Test::More tests => 13;

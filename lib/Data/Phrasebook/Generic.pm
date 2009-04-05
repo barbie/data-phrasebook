@@ -5,7 +5,7 @@ use Data::Phrasebook::Loader;
 use base qw( Data::Phrasebook::Debug );
 use Carp qw( croak );
 
-our $VERSION = '0.26';
+our $VERSION = '0.27';
 
 =head1 NAME
 
@@ -48,10 +48,14 @@ B<this> class.
 sub new {
     my $class = shift;
     my %hash = @_;
-    $class->store(3,"$class->new IN");
+	$hash{loader} ||= 'Text';
 
-    $class->store(4,"$class->new args=[".$class->dumper(\%hash)."]");
-    my $self = bless {}, $class;
+    if($class->debug) {
+		$class->store(3,"$class->new IN");
+		$class->store(4,"$class->new args=[".$class->dumper(\%hash)."]");
+	}
+
+	my $self = bless {}, $class;
     foreach (keys %hash) {
         $self->$_($hash{$_});
     }
@@ -100,17 +104,23 @@ Accessor to store the dictionary to be used.
 
 sub loader {
     my $self = shift;
-    @_ ? $self->{loader} = shift : $self->{loader};
+    my $load = @_ ? shift : defined $self->{loader} ? $self->{loader} : 'Text';
+	$self->{loader} = $load;
 }
 sub unload {
     my $self = shift;
     $self->{loaded} = undef;
     $self->{'loaded-data'} = undef;
+    return;
 }
 
 sub loaded {
     my $self = shift;
-    @_ ? $self->{loaded} = shift : $self->{loaded};
+    my $load = @_ ? $self->{loaded} = shift : $self->{loaded} ;
+
+	# ensure we know what loader class we are getting
+	$self->loader($load->class)  if($load);
+	return $load;
 }
 sub file {
     my $self = shift;
@@ -121,24 +131,24 @@ sub file {
             $self->{file} = $file;
         }
     }
-    $self->{file};
+    return $self->{file};
 }
 
 sub dict {
     my $self = shift;
 
-	if(@_) {
-		my $list1 = "@_";
-		my $list2 = $self->{dict} ? "@{$self->{dict}}" : '';
+    if(@_) {
+        my $list1 = "@_";
+        my $list2 = $self->{dict} ? "@{$self->{dict}}" : '';
 
-		if($list1 ne $list2) {
-			$self->unload();
-			$self->{dict} = (ref $_[0] ? $_[0] : [@_]);
-		}
-	}
+        if($list1 ne $list2) {
+            $self->unload();
+            $self->{dict} = (ref $_[0] ? $_[0] : [@_]);
+        }
+    }
 
-	return($self->{dict} ? @{$self->{dict}}		: ()	)	if(wantarray);
-	return($self->{dict} ? $self->{dict}->[0]	: undef );
+    return($self->{dict} ? @{$self->{dict}}     : ()    )   if(wantarray);
+    return($self->{dict} ? $self->{dict}->[0]   : undef );
 }
 
 =head2 dicts
@@ -148,8 +158,8 @@ attribute as a directory path, the object can return a list of the current
 dictionaries available (provided the plugin supports it) as:
 
   my $pb = Data::Phrasebook->new(
-  	loader => 'Text',
-	file   => '/tmp/phrasebooks',
+    loader => 'Text',
+    file   => '/tmp/phrasebooks',
   );
 
   my @dicts = $pb->dicts;
@@ -164,21 +174,20 @@ sub dicts {
     my $self = shift;
 
     my $loader = $self->loaded;
-    if(!defined $loader) {
-        if($self->debug) {
-            $self->store(4,"->dicts loader=[".($self->loader||'undef')."]");
-        }
+    unless($loader) {
+        $self->store(4,"->dicts loader=[".($self->loader)."]")	if($self->debug);
         $loader = Data::Phrasebook::Loader->new(
             'class' => $self->loader,
             'parent' => $self,
         );
+        $self->loader($loader->class);  # so we know what we've got
     }
 
     # just in case it doesn't use D::P::Loader::Base
     croak("dicts() unsupported in plugin")
-    	unless($loader->can("dicts"));
+        unless($loader->can("dicts"));
 
-    $loader->dicts(@_);
+    return $loader->dicts(@_);
 }
 
 =head2 keywords
@@ -188,9 +197,9 @@ attribute as required, the object can return a list of the current keywords
 available (provided the plugin supports it) as:
 
   my $pb = Data::Phrasebook->new(
-  	loader => 'Text',
-	file   => '/tmp/phrasebooks',
-	dict   => 'TEST',
+    loader => 'Text',
+    file   => '/tmp/phrasebooks',
+    dict   => 'TEST',
   );
 
   my @keywords = $pb->keywords;
@@ -209,20 +218,19 @@ sub keywords {
 
     my $loader = $self->loaded;
     if(!defined $loader) {
-        if($self->debug) {
-            $self->store(4,"->keywords loader=[".($self->loader||'undef')."]");
-        }
+        $self->store(4,"->keywords loader=[".($self->loader)."]")	if($self->debug);
         $loader = Data::Phrasebook::Loader->new(
             'class' => $self->loader,
             'parent' => $self,
         );
+        $self->loader($loader->class);  # so we know what we've got
     }
 
     # just in case it doesn't use D::P::Loader::Base
     croak("keywords() unsupported in plugin")
-    	unless($loader->can("keywords"));
+        unless($loader->can("keywords"));
 
-    $loader->keywords(@_);
+    return $loader->keywords(@_);
 }
 
 =head2 data
@@ -240,14 +248,18 @@ sub data
 {
     my $self = shift;
     my $id = shift;
-    $self->store(3,"->data IN");
-    $self->store(4,"->data id=[$id]");
+
+    if($self->debug) {
+		$self->store(3,"->data IN");
+		$self->store(4,"->data id=[$id]");
+	}
+
     return  unless($id);
 
     my $loader = $self->loaded;
     if(!defined $loader) {
         if($self->debug) {
-            $self->store(4,"->data loader=[".($self->loader||'undef')."]");
+            $self->store(4,"->data loader=[".($self->loader)."]");
             $self->store(4,"->data file=[".($self->file||'undef')."]");
             $self->store(4,"->data dict=[".($self->dict||'undef')."]");
         }
@@ -255,11 +267,12 @@ sub data
             'class' => $self->loader,
             'parent' => $self,
         );
+        $self->loader($loader->class);  # so we know what we've got
         $loader->load( $self->file, $self->dict );
         $self->loaded($loader);
     }
 
-    $self->{'loaded-data'}->{$id} ||= do { $loader->get( $id ) };
+    return $self->{'loaded-data'}->{$id} ||= do { $loader->get( $id ) };
 }
 
 =head2 delimiters
@@ -279,7 +292,7 @@ The example below shows a Template Toolkit style regex.
 
 sub delimiters {
     my $self = shift;
-    @_ ? $self->{delimiters} = shift : $self->{delimiters};
+    return @_ ? $self->{delimiters} = shift : $self->{delimiters};
 }
 
 1;
@@ -297,14 +310,15 @@ Please see the README file.
 
 =head1 AUTHOR
 
-Original author: Iain Campbell Truskett (16.07.1979 - 29.12.2003)
+  Original author: Iain Campbell Truskett (16.07.1979 - 29.12.2003)
+  Maintainer: Barbie <barbie@cpan.org> since January 2004.
+  for Miss Barbell Productions <http://www.missbarbell.co.uk>.
 
-Maintainer: Barbie <barbie@cpan.org> since January 2004.
+=head1 COPYRIGHT AND LICENSE
 
-=head1 LICENCE AND COPYRIGHT
-
-  Copyright (C) Iain Truskett, 2003. All rights reserved.
-  Copyright (C) Barbie, 2004-2006. All rights reserved.
+  Copyright (C) 2003 Iain Truskett. All rights reserved.
+  Copyright (C) 2004-2007 Barbie for Miss Barbell Productions.
+  All Rights Reserved.
 
   This library is free software; you can redistribute it and/or modify
   it under the same terms as Perl itself.

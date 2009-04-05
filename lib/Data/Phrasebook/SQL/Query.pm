@@ -5,7 +5,7 @@ use base qw( Data::Phrasebook::Debug );
 use vars qw( $AUTOLOAD );
 use Carp qw( croak );
 
-our $VERSION = '0.26';
+our $VERSION = '0.27';
 
 =head1 NAME
 
@@ -62,7 +62,7 @@ Get/set the database handle.
 sub new {
     my $self = shift;
     my %hash = @_;
-    $self->store(3,"$self->new IN");
+    $self->store(3,"$self->new IN")	if($self->debug);
     my $atts = \%hash;
     bless $atts, $self;
     return $atts;
@@ -71,19 +71,20 @@ sub new {
 sub DESTROY {
     my $self = shift;
     $self->sth->finish    if($self->sth);
+    return;
 }
 
 sub sql {
     my $self = shift;
-    @_ ? $self->{sql} = shift : $self->{sql};
+    return @_ ? $self->{sql} = shift : $self->{sql};
 }
 sub dbh {
     my $self = shift;
-    @_ ? $self->{dbh} = shift : $self->{dbh};
+    return @_ ? $self->{dbh} = shift : $self->{dbh};
 }
 sub sth {
     my $self = shift;
-    @_ ? $self->{sth} = shift : $self->{sth};
+    return @_ ? $self->{sth} = shift : $self->{sth};
 }
 sub args {
     my $self = shift;
@@ -116,10 +117,10 @@ Calls C<prepare> if necessary.
 sub execute
 {
     my $self = shift;
-    $self->store(3,"->execute IN: @_");
+    $self->store(3,"->execute IN: @_")	if($self->debug);
     my $sth = $self->sth;
     my @args = @_ ? $self->order_args( @_ ) : ();
-    @args = ()	if(@args && !defined $args[0]);
+    @args = ()  if(@args && !defined $args[0]);
     $sth = $self->prepare() unless $sth;
 
     unless(@args) {
@@ -127,7 +128,7 @@ sub execute
         return $sth->execute();
     }
 
-    $self->store(4,"->execute args[".join(",",map {$_||'undef'} @args)."]");
+    $self->store(4,"->execute args[".join(",",map {$_||'undef'} @args)."]")	if($self->debug);
     return $sth->execute( map { $$_ } @args );
 }
 
@@ -170,13 +171,13 @@ to know about it.
 sub prepare
 {
     my $self = shift;
-    $self->store(3,"$self->prepare IN");
+    $self->store(3,"$self->prepare IN")	if($self->debug);
     my $sql = $self->sql;
-    $self->store(4,"$self->prepare sql=[$sql]");
+    $self->store(4,"$self->prepare sql=[$sql]")	if($self->debug);
     croak "Can't prepare without SQL" unless defined $sql;
     my $sth = $self->dbh->prepare_cached( $sql );
     $self->sth( $sth );
-    $sth;
+    return $sth;
 }
 
 =head2 rebind
@@ -196,9 +197,10 @@ sub rebind
     my $args = $self->args;
     for my $x (0..$#{$args})
     {
-		$self->store(4,"->rebind param[".($x+1).",".(${ $args->[$x] })."]");
+        $self->store(4,'->rebind param['.($x+1).','.(${ $args->[$x] }).']')	if($self->debug);
         $sth->bind_param( $x+1, ${ $args->[$x] } )
     }
+    return;
 }
 
 =head1 DELEGATED METHODS
@@ -258,14 +260,15 @@ Please see the README file.
 
 =head1 AUTHOR
 
-Original author: Iain Campbell Truskett (16.07.1979 - 29.12.2003)
+  Original author: Iain Campbell Truskett (16.07.1979 - 29.12.2003)
+  Maintainer: Barbie <barbie@cpan.org> since January 2004.
+  for Miss Barbell Productions <http://www.missbarbell.co.uk>.
 
-Maintainer: Barbie <barbie@cpan.org> since January 2004.
+=head1 COPYRIGHT AND LICENSE
 
-=head1 LICENCE AND COPYRIGHT
-
-  Copyright (C) Iain Truskett, 2003. All rights reserved.
-  Copyright (C) Barbie, 2004-2005. All rights reserved.
+  Copyright (C) 2003 Iain Truskett. All rights reserved.
+  Copyright (C) 2004-2007 Barbie for Miss Barbell Productions.
+  All Rights Reserved.
 
   This library is free software; you can redistribute it and/or modify
   it under the same terms as Perl itself.

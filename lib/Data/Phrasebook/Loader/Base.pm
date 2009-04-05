@@ -4,7 +4,7 @@ use warnings FATAL => 'all';
 use base qw( Data::Phrasebook::Debug );
 use Carp qw( croak );
 
-our $VERSION = '0.26';
+our $VERSION = '0.27';
 
 my $something = 0;
 
@@ -33,7 +33,8 @@ attributes passed as arguments.
 sub new {
     my $self = shift;
     my %hash = @_;
-    $self->store(3,"$self->new IN");
+    ($hash{class}) = $self =~ /.*::(.*)$/;
+    $self->store(3,"$self->new IN")	if($self->debug);
     my $atts = \%hash;
     bless $atts, $self;
     return $atts;
@@ -61,15 +62,17 @@ subclass. Returns the list of dictionaries available.
 C<keywords> is an abstract method here. You must define your own in your
 subclass. Returns the list of keywords available.
 
+=head2 class
+
+Returns the current C<class> of loader.
+
 =cut
 
-sub load     { 
-	return undef 
-}
-
-sub get      { return undef }
+sub load     { return }
+sub get      { return }
 sub dicts    { return () }
 sub keywords { return () }
+sub class    { return shift->{class} }
 
 1;
 
@@ -89,12 +92,13 @@ Please see the README file.
   Barbie, <barbie@cpan.org>
   for Miss Barbell Productions <http://www.missbarbell.co.uk>.
 
-=head1 LICENCE AND COPYRIGHT
+=head1 COPYRIGHT AND LICENSE
 
-  Copyright (C) 2004-2005 Barbie for Miss Barbell Productions.
+  Copyright (C) 2004-2007 Barbie for Miss Barbell Productions.
+  All Rights Reserved.
 
-  This library is free software; you can redistribute it and/or modify
-  it under the same terms as Perl itself.
+  This module is free software; you can redistribute it and/or 
+  modify it under the same terms as Perl itself.
 
 The full text of the licences can be found in the F<Artistic> and
 F<COPYING> files included with this module, or in L<perlartistic> and

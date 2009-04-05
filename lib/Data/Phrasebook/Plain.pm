@@ -4,7 +4,7 @@ use warnings FATAL => 'all';
 use base qw( Data::Phrasebook::Generic Data::Phrasebook::Debug );
 use Carp qw( croak );
 
-our $VERSION = '0.26';
+our $VERSION = '0.27';
 
 =head1 NAME
 
@@ -63,7 +63,8 @@ sub fetch
 {
     my $self = shift;
     my ($id, $args) = @_;
-    $self->store(3,"->fetch IN - @_");
+
+    $self->store(3,"->fetch IN - @_")	if($self->debug);
 
     my $map = $self->data($id);
     croak "No mapping for '$id'" unless($map);
@@ -98,14 +99,15 @@ Please see the README file.
 
 =head1 AUTHOR
 
-Original author: Iain Campbell Truskett (16.07.1979 - 29.12.2003)
+  Original author: Iain Campbell Truskett (16.07.1979 - 29.12.2003)
+  Maintainer: Barbie <barbie@cpan.org> since January 2004.
+  for Miss Barbell Productions <http://www.missbarbell.co.uk>.
 
-Maintainer: Barbie <barbie@cpan.org> since January 2004.
+=head1 COPYRIGHT AND LICENSE
 
-=head1 LICENCE AND COPYRIGHT
-
-  Copyright (C) Iain Truskett, 2003. All rights reserved.
-  Copyright (C) Barbie, 2004-2005. All rights reserved.
+  Copyright (C) 2003 Iain Truskett. All rights reserved.
+  Copyright (C) 2004-2007 Barbie for Miss Barbell Productions.
+  All Rights Reserved.
 
   This library is free software; you can redistribute it and/or modify
   it under the same terms as Perl itself.

@@ -6,7 +6,7 @@ use Carp qw( croak );
 
 use Module::Pluggable   search_path => ['Data::Phrasebook::Loader'];
 
-our $VERSION = '0.26';
+our $VERSION = '0.27';
 
 =head1 NAME
 
@@ -44,10 +44,12 @@ sub new
 {
     my $self  = shift;
     my %args  = @_;
-    my $class = delete $args{class} || $DEFAULT_CLASS;
+    my $class = delete $args{class} || 'Text';
 
-    $self->store(3,"$self->new IN");
-    $self->store(4,"$self->new class=[$class]");
+    if($self->debug) {
+		$self->store(3,"$self->new IN");
+		$self->store(4,"$self->new class=[$class]");
+	}
 
     # in the event we have been subclassed
     $self->search_path( add => "$self" );
@@ -61,7 +63,8 @@ sub new
     croak("no loader available of that name\n") unless($plugin);
     eval "CORE::require $plugin";
     croak "Couldn't require $plugin : $@" if $@;
-    $self->store(4,"$self->new plugin=[$plugin]");
+
+    $self->store(4,"$self->new plugin=[$plugin]")	if($self->debug);
     return $plugin->new( %args );
 }
 
@@ -87,14 +90,15 @@ Please see the README file.
 
 =head1 AUTHOR
 
-Original author: Iain Campbell Truskett (16.07.1979 - 29.12.2003)
+  Original author: Iain Campbell Truskett (16.07.1979 - 29.12.2003)
+  Maintainer: Barbie <barbie@cpan.org> since January 2004.
+  for Miss Barbell Productions <http://www.missbarbell.co.uk>.
 
-Maintainer: Barbie <barbie@cpan.org> since January 2004.
+=head1 COPYRIGHT AND LICENSE
 
-=head1 LICENCE AND COPYRIGHT
-
-  Copyright (C) Iain Truskett, 2003. All rights reserved.
-  Copyright (C) Barbie, 2004-2005. All rights reserved.
+  Copyright (C) 2003 Iain Truskett. All rights reserved.
+  Copyright (C) 2004-2007 Barbie for Miss Barbell Productions.
+  All Rights Reserved.
 
   This library is free software; you can redistribute it and/or modify
   it under the same terms as Perl itself.

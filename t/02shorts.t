@@ -1,6 +1,6 @@
 #!/usr/bin/perl -w
 use strict;
-use lib 't';
+use lib 't/lib';
 use vars qw( $class );
 use BookDB;
 

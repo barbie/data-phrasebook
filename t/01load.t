@@ -1,9 +1,9 @@
 #!/usr/bin/perl -w
 use strict;
-use lib 't';
+use lib 't/lib';
 use vars qw( $class $subclass );
 
-use Test::More tests => 20;
+use Test::More tests => 39;
 
 # ------------------------------------------------------------------------
 
@@ -25,6 +25,8 @@ my $file2 = 't/01phrases2.txt';
     isa_ok( $obj => "${class}::Plain", 'Class new' );
     $obj->file( $file );
     is( $obj->file() => $file , 'Set/get file works');
+    $obj->file( $file2 );
+    is( $obj->file() => $file2 , 'Reset/get file works');
 }
 
 {
@@ -99,4 +101,36 @@ my $file2 = 't/01phrases2.txt';
 {
     eval { my $obj = $class->new(class  => 'Plain', loader => 'Bogus' ); $obj->fetch( 'bar' ); };
     like($@, qr/no loader available of that name/);
+}
+
+{
+    BEGIN { use_ok 'Data::Phrasebook::Loader'; }
+
+    my $obj = Data::Phrasebook::Loader->new();
+    isa_ok( $obj => "${class}::Loader::Text", 'Loader new' );
+    is( $obj->class, 'Text', 'default loader = Text' );
+}
+
+{
+    BEGIN { use_ok 'Data::Phrasebook::Loader::Fake'; }
+    BEGIN { use_ok 'Data::Phrasebook::Loader'; }
+
+    my $fake = Data::Phrasebook::Loader::Fake->new();
+    isa_ok( $fake => "${class}::Loader::Fake", 'new Fake Loader' );
+    is( $fake->class, 'Fake', 'pretend loader = Fake' );
+    is( $fake->load, undef, 'Fake - failed to load' );
+    is( $fake->get,  undef, 'Fake - failed to get' );
+    is_deeply( [$fake->dicts],    [], 'Fake - no dictionaries' );
+    is_deeply( [$fake->keywords], [], 'Fake - no keywords' );
+
+    my $obj = $subclass->new;
+    is( $obj->loader, 'Text', 'empty loader => Text' );
+    is( $obj->loaded(), undef, 'nothing loaded' );
+    is( $obj->loaded($fake), $fake, 'Fake loaded' );
+    is( $obj->loader, 'Fake', 'Fake loader' );
+
+    $obj = $subclass->new;
+    is( $obj->loaded(), undef, 'nothing loaded' );
+    is( $obj->loaded($fake), $fake, 'Fake loaded' );
+    is( $obj->loader, 'Fake', 'Fake loader' );
 }

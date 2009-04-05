@@ -3,7 +3,7 @@ use strict;
 use warnings FATAL => 'all';
 use Carp qw( croak );
 
-our $VERSION = '0.26';
+our $VERSION = '0.27';
 
 =head1 NAME
 
@@ -66,7 +66,7 @@ Accessor to debugging flag.
 sub debug
 {
     my $self = shift;
-    @_ ? $debug = shift : $debug;
+    return @_ ? $debug = shift : $debug;
 }
 
 =head2 clear
@@ -77,7 +77,7 @@ Clear the currently stored debugging information.
 
 sub clear
 {
-    @debug = ();
+    return @debug = ();
 }
 
 =head2 store
@@ -93,7 +93,8 @@ sub store
     my ($self, $id, @args) = @_;
     return  if(!$id || $debug < $id);
 
-    push @debug, [$id, join(" ",@args)];
+    push @debug, [$id, join(' ',@args)];
+	return;
 }
 
 =head2 retrieve
@@ -119,9 +120,12 @@ Uses 'on demand' call to Data::Dumper::Dumper().
 sub dumper
 {
     my $self = shift;
-    require 'Data/Dumper.pm';
-    Data::Dumper->import();
-    Dumper(@_);
+    my $dump = 'Data::Dumper';
+    if(eval { require $dump }) {
+        $dump->import;
+		return Dumper(@_);
+	}
+	return '';
 }
 
 1;
@@ -143,7 +147,7 @@ Please see the README file.
 
 =head1 COPYRIGHT AND LICENSE
 
-  Copyright (C) 2004-2005 Barbie for Miss Barbell Productions.
+  Copyright (C) 2004-2007 Barbie for Miss Barbell Productions.
   All Rights Reserved.
 
   This module is free software; you can redistribute it and/or 

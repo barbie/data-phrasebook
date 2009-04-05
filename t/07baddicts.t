@@ -1,6 +1,5 @@
 #!/usr/bin/perl -w
 use strict;
-use lib 't';
 
 use Test::More tests => 7;
 use Data::Phrasebook;

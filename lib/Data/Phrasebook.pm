@@ -4,11 +4,15 @@ use warnings FATAL => 'all';
 use base qw( Data::Phrasebook::Debug );
 use Carp qw( croak );
 
-our $VERSION = '0.26';
+our $VERSION = '0.27';
 
 =head1 NAME
 
 Data::Phrasebook - Abstract your queries!
+
+=head1 ABSTRACT
+
+A collection of modules for accessing phrasebooks from various data sources.
 
 =head1 SYNOPSIS
 
@@ -115,8 +119,10 @@ sub new
     my $debug = delete $args{debug} || 0;
     $class->debug($debug);
 
-    $class->store(3,"$class->new IN");
-    $class->store(4,"$class->new args=[".$class->dumper(\%args)."]");
+    if($debug) {
+		$class->store(3,"$class->new IN");
+		$class->store(4,"$class->new args=[".$class->dumper(\%args).']');
+	}
 
     my $sub = delete $args{class} || 'Plain';
     if (eval "require ${class}::$sub") {
@@ -129,8 +135,9 @@ sub new
         croak "Could not find appropriate class for '$sub': [$@]";
     }
 
-    $class->store(4,"$class->new sub=[$sub]");
-    my $self = $sub->new( %args );
+    $class->store(4,"$class->new sub=[$sub]")	if($class->debug);
+
+    return $sub->new( %args );
 }
 
 1;
@@ -269,14 +276,15 @@ Please see the README file.
 
 =head1 AUTHOR
 
-Original author: Iain Campbell Truskett (16.07.1979 - 29.12.2003)
+  Original author: Iain Campbell Truskett (16.07.1979 - 29.12.2003)
+  Maintainer: Barbie <barbie@cpan.org> since January 2004.
+  for Miss Barbell Productions <http://www.missbarbell.co.uk>.
 
-Maintainer: Barbie <barbie@cpan.org> since January 2004.
+=head1 COPYRIGHT AND LICENSE
 
-=head1 LICENCE AND COPYRIGHT
-
-  Copyright (C) Iain Truskett, 2003. All rights reserved.
-  Copyright (C) Barbie, 2004-2005. All rights reserved.
+  Copyright (C) 2003 Iain Truskett. All rights reserved.
+  Copyright (C) 2004-2007 Barbie for Miss Barbell Productions.
+  All Rights Reserved.
 
   This library is free software; you can redistribute it and/or modify
   it under the same terms as Perl itself.

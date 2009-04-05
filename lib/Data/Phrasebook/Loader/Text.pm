@@ -3,8 +3,9 @@ use strict;
 use warnings FATAL => 'all';
 use base qw( Data::Phrasebook::Loader::Base Data::Phrasebook::Debug );
 use Carp qw( croak );
+use IO::File;
 
-our $VERSION = '0.26';
+our $VERSION = '0.27';
 
 =head1 NAME
 
@@ -26,11 +27,6 @@ Data::Phrasebook::Loader::Text - Absract your phrases with plain text files.
     # use Template Toolkit style delimiters
     $q->delimiters( qr{ \[% \s* (\w+) \s* %\] }x );
     my $phrase = $q->fetch($keyword,{variable => 'substitute'});
-
-=head1 ABSTRACT
-
-This module provides a loader class for phrasebook implementations using 
-plain text files.
 
 =head1 DESCRIPTION
 
@@ -83,34 +79,36 @@ my %phrasebook;
 
 sub load {
     my ($class, $file, @dict) = @_;
-    $class->store(3,"->load IN - @_");
+    $class->store(3,"->load IN - @_")	if($class->debug);
     $file ||= $class->{parent}->file;
-	@dict   = $class->{parent}->dict	unless(@dict);
-    croak "No file given as argument!"	unless defined $file;
+    @dict   = $class->{parent}->dict    unless(@dict);
+    croak "No file given as argument!"  unless defined $file;
 
-	my @file;
-	if(@dict) {
-		while(@dict) {
-			my $dict = pop @dict;	# build phrases in reverse order
-			$dict = "$file/$dict";
-			croak "File [$dict] not accessible!" unless -f $dict && -r $dict;
-			push @file, $dict;
-		}
-	} else {
-		croak "File [$file] not accessible!" unless -f $file && -r $file;
-		push @file, $file;
-	}
+    my @file;
+    if(@dict) {
+        while(@dict) {
+            my $dict = pop @dict;   # build phrases in reverse order
+            $dict = "$file/$dict";
+            croak "File [$dict] not accessible!" unless -f $dict && -r $dict;
+            push @file, $dict;
+        }
+    } else {
+        croak "File [$file] not accessible!" unless -f $file && -r $file;
+        push @file, $file;
+    }
 
     %phrasebook = ();   # ignore previous dictionary
 
-	for my $file (@file) {
-		open BOOK, $file    or next;
-		while(<BOOK>) {
-			my ($name,$value) = (/(.*?)=(.*)/);
-			$phrasebook{$name} = $value if($name);  # value can be blank
-		}
-		close BOOK;
-	}
+    for my $file (@file) {
+        my $book = IO::File->new($file)    or next;
+        while(<$book>) {
+            my ($name,$value) = (/(.*?)=(.*)/);
+            $phrasebook{$name} = $value if($name);  # value can be blank
+        }
+        $book->close;
+    }
+
+    return;
 }
 
 =head2 get
@@ -138,8 +136,8 @@ attribute as a directory path, the object can return a list of the current
 dictionaries available as:
 
   my $pb = Data::Phrasebook->new(
-  	loader => 'Text',
-	file   => '/tmp/phrasebooks',
+    loader => 'Text',
+    file   => '/tmp/phrasebooks',
   );
 
   my @dicts = $pb->dicts;
@@ -153,7 +151,7 @@ or
 sub dicts {
     my ($self,$path) = @_;
     $path ||= $self->{parent}->file;
-    return ()	unless($path && -d $path && -r $path);
+    return ()   unless($path && -d $path && -r $path);
 
     my @files = map { s/$path.//;$_ } grep {/^[^\.]+.txt$/} glob("$path/*");
     return @files;
@@ -166,9 +164,9 @@ and C<dict> attributes as required, the object can return a list of the
 current keywords available as:
 
   my $pb = Data::Phrasebook->new(
-  	loader => 'Text',
-	file   => '/tmp/phrasebooks',
-	dict   => 'TEST',
+    loader => 'Text',
+    file   => '/tmp/phrasebooks',
+    dict   => 'TEST',
   );
 
   my @keywords = $pb->keywords;
@@ -193,15 +191,15 @@ sub keywords {
     $dict ||= $self->{parent}->dict;
     croak "No file given as argument!" unless defined $file;
 
-    $file = "$file/$dict"	if(-d $file && defined $dict);
+    $file = "$file/$dict"   if(-d $file && defined $dict);
     croak "File [$file] not accessible!" unless -f $file && -r $file;
 
     my @keywords;
-    open BOOK, $file    or return undef;
-    while(<BOOK>) {
+    my $book = IO::File->new($file)    or return;
+    while(<$book>) {
         push @keywords, $1   if(/(.*?)=/ && $1);
     }
-    close BOOK;
+    $book->close;
 
     return sort @keywords;
 }
@@ -223,12 +221,13 @@ Please see the README file.
   Barbie, <barbie@cpan.org>
   for Miss Barbell Productions <http://www.missbarbell.co.uk>.
 
-=head1 LICENCE AND COPYRIGHT
+=head1 COPYRIGHT AND LICENSE
 
-  Copyright (C) 2004-2005 Barbie for Miss Barbell Productions.
+  Copyright (C) 2004-2007 Barbie for Miss Barbell Productions.
+  All Rights Reserved.
 
-  This library is free software; you can redistribute it and/or modify
-  it under the same terms as Perl itself.
+  This module is free software; you can redistribute it and/or 
+  modify it under the same terms as Perl itself.
 
 The full text of the licences can be found in the F<Artistic> and
 F<COPYING> files included with this module, or in L<perlartistic> and

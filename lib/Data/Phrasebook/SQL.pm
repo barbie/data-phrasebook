@@ -6,7 +6,7 @@ use Carp qw( croak );
 
 use Data::Phrasebook::SQL::Query;
 
-our $VERSION = '0.26';
+our $VERSION = '0.27';
 
 =head1 NAME
 
@@ -72,7 +72,7 @@ Set, or get, the current DBI handle.
 
 sub dbh {
     my $self = shift;
-    @_ ? $self->{dbh} = shift : $self->{dbh};
+    return @_ ? $self->{dbh} = shift : $self->{dbh};
 }
 
 =head2 query
@@ -106,7 +106,7 @@ You could write:
     } );
 
     # sql  = select class,title,author from books where author = ?
-	# args = 'Lance Parkin'
+    # args = 'Lance Parkin'
 
 In the above examples, the parameters are bound to the SQL using the bind
 parameters functionality. This is more efficient in most cases where the
@@ -120,12 +120,12 @@ the ability to replace parameters, such as a field list.
         sql: select :fields from books where author = :author
 
     my $q = $book->query( 'find_author', 
-		replace => { fields => 'class,title,author' },
-		bind    => { author => 'Lance Parkin' }
-		);
+        replace => { fields => 'class,title,author' },
+        bind    => { author => 'Lance Parkin' }
+        );
 
     # sql  = select class,title,author from books where author = ?
-	# args = 'Lance Parkin'
+    # args = 'Lance Parkin'
 
 In all instances, if the SQL template requested does not exist or has no 
 definition, then an error will be thrown.
@@ -140,14 +140,17 @@ query object's C<order_args> and then C<args> methods.
 
 sub query {
     my ($self,$id,@args) = @_;
-    $self->store(3,"->query IN");
+
+	$self->store(3,"->query IN")	if($self->debug);
 
     my $map = $self->data($id);
     croak "No mapping for '$id'" unless($map);
-    my $sql = '';
+    my $sql;
 
-    $self->store(4,"->query id=[$id]");
-    $self->store(4,"->query map=[$map]");
+    if($self->debug) {
+		$self->store(4,"->query id=[$id]");
+		$self->store(4,"->query map=[$map]");
+	}
 
     if(ref $map eq 'HASH') {
         croak "No SQL content for '$id'." unless exists $map->{sql}
@@ -157,7 +160,7 @@ sub query {
         $sql = $map;    # we assume sql string only
     }
 
-	unshift @args, 'bind'	if(scalar(@args) == 1);	# default is to bind parameters
+    unshift @args, 'bind'   if(scalar(@args) == 1); # default is to bind parameters
 
     if($self->debug) {
         $self->store(4,"->query BEFORE methods");
@@ -166,36 +169,36 @@ sub query {
     }
 
     my (%args,$params,@order);
-	while(@args) {
-		# go backwards in case there are duplicate keys
-		my $args   = pop @args;
-		my $method = pop @args;
+    while(@args) {
+        # go backwards in case there are duplicate keys
+        my $args   = pop @args;
+        my $method = pop @args;
 
-		for(keys %$args) {
-			$args{$_}->{method} = $method;
-			$args{$_}->{value} = $args->{$_};
-		}
+        for(keys %$args) {
+            $args{$_}->{method} = $method;
+            $args{$_}->{value} = $args->{$_};
+        }
 
-		$params = $args	if($method eq 'bind');
-	}
+        $params = $args if($method eq 'bind');
+    }
 
-	my $delim_RE = $self->delimiters();
-	$sql =~ s{$delim_RE}[
-				{
-					if(defined $args{$1} && $args{$1}->{method} eq 'replace') {
-						$args{$1}->{value};
-					} else {
-						push @order, $1;
-						"?"
-					}
-				};
-			]egx;
+    my $delim_RE = $self->delimiters();
+    $sql =~ s{$delim_RE}[
+                {
+                    if(defined $args{$1} && $args{$1}->{method} eq 'replace') {
+                        $args{$1}->{value};
+                    } else {
+                        push @order, $1;
+                        "?"
+                    }
+                };
+            ]egx;
 
     if($self->debug) {
-        $self->store(4,"->query AFTER methods");
+        $self->store(4,'->query AFTER methods');
         $self->store(4,"->query sql=[$sql]");
-        $self->store(4,"->query order=[".join(",",@order)."]");
-        $self->store(4,"->query params=[".$self->dumper($params)."]");
+        $self->store(4,'->query order=['.join(',',@order).']');
+        $self->store(4,'->query params=['.$self->dumper($params).']');
     }
     
     my $q = Data::Phrasebook::SQL::Query->new(
@@ -204,7 +207,7 @@ sub query {
         dbh => $self->dbh,
     );
     $q->args( $q->order_args( $params ) ) if($params);
-    $q;
+    return $q;
 }
 
 
@@ -224,14 +227,15 @@ Please see the README file.
 
 =head1 AUTHOR
 
-Original author: Iain Campbell Truskett (16.07.1979 - 29.12.2003)
+  Original author: Iain Campbell Truskett (16.07.1979 - 29.12.2003)
+  Maintainer: Barbie <barbie@cpan.org> since January 2004.
+  for Miss Barbell Productions <http://www.missbarbell.co.uk>.
 
-Maintainer: Barbie <barbie@cpan.org> since January 2004.
+=head1 COPYRIGHT AND LICENSE
 
-=head1 LICENCE AND COPYRIGHT
-
-  Copyright (C) Iain Truskett, 2003. All rights reserved.
-  Copyright (C) Barbie, 2004-2005. All rights reserved.
+  Copyright (C) 2003 Iain Truskett. All rights reserved.
+  Copyright (C) 2004-2007 Barbie for Miss Barbell Productions.
+  All Rights Reserved.
 
   This library is free software; you can redistribute it and/or modify
   it under the same terms as Perl itself.

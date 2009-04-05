@@ -1,12 +1,55 @@
-# http://module-build.sourceforge.net/META-spec.html
-#XXXXXXX This is a prototype!!!  It will change in the future!!! XXXXX#
+--- #YAML:1.0
 name:         Data-Phrasebook
-version:      0.26
-version_from: lib/Data/Phrasebook.pm
+version:      0.27
+abstract:     A collection of modules for accessing phrasebooks from various data sources.
+author:
+  - Barbie <barbie@cpan.org>
+license: gpl
+distribution_type: module
 installdirs:  site
 requires:
-    Module::Pluggable:             2.7
-    Test::More:                    0.47
-
-distribution_type: module
-generated_by: ExtUtils::MakeMaker version 6.17
+    Module::Pluggable:          2.7
+    Test::More:                 0.47
+recommends:
+    Test::More:                 0.47
+    Test::Pod:			1.00
+    Test::Pod::Coverage:	0.08
+    Test::Distribution:		0
+build_requires:
+    Test::More:			0.47
+provides:
+  Data::Phrasebook:
+    file: lib/Data/Phrasebook.pm
+    version: 0.27
+  Data::Phrasebook::Debug:
+    file: lib/Data/Phrasebook/Debug.pm
+    version: 0.27
+  Data::Phrasebook::Generic:
+    file: lib/Data/Phrasebook/Generic.pm
+    version: 0.27
+  Data::Phrasebook::Loader:
+    file: lib/Data/Phrasebook/Loader.pm
+    version: 0.27
+  Data::Phrasebook::Loader::Base:
+    file: lib/Data/Phrasebook/Loader/Base.pm
+    version: 0.27
+  Data::Phrasebook::Loader::Text:
+    file: lib/Data/Phrasebook/Loader/Text.pm
+    version: 0.27
+  Data::Phrasebook::Plain:
+    file: lib/Data/Phrasebook/Plain.pm
+    version: 0.27
+  Data::Phrasebook::SQL:
+    file: lib/Data/Phrasebook/SQL.pm
+    version: 0.27
+  Data::Phrasebook::SQL::Query:
+    file: lib/Data/Phrasebook/SQL/Query.pm
+    version: 0.27
+no_index:
+  directory:
+  - ./t
+  - ./examples
+meta-spec:
+   version: 1.3
+   url: http://module-build.sourceforge.net/META-spec-v1.3.html
+generated_by: Hand 1.0

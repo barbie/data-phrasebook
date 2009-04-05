@@ -1,5 +1,18 @@
 # Changes log for Data::Phrasebook
 
+0.27    22/02/2007
+	- Handwritten META.yml to conform to current specs.
+	- Changed all instances of LICENCE to LICENSE as *apparently*, to all
+	  non-British users of this module, this a bug! I beg to differ -
+	  http://dictionary.reference.com/search?q=licence
+	- Added an examples directory. Nothing in it yet, except a request
+	  for interesting scripts.
+	- Added missing checks for debug calls
+	- Ensure DP::Generic::loader() returns a value.
+	- Ensure DP::Loader classes know their own class.
+	- More tests!
+        - Devel::Cover - 90.4%
+
 0.26    28/09/2006
 	- Patch supplied from Oliver Gorwits to support the ability of passing
 	  an array reference for the list of dictionaries. 
