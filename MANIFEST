@@ -1,5 +1,3 @@
-Artistic
-COPYING
 ChangeLog
 Changes
 INSTALL
@@ -7,6 +5,7 @@ LICENSE
 MANIFEST
 MANIFEST.SKIP
 META.yml
+META.json
 Makefile.PL
 README
 examples/examples.txt
@@ -36,6 +35,8 @@ t/08phrases.txt
 t/90podtest.t
 t/91podcover.t
 t/94metatest.t
+t/95changedate.t
+t/96metatest.t
 t/lib/BookDB.pm
 t/lib/Data/Phrasebook/Loader/Fake.pm
 t/lib/MyClass.pm

@@ -3,7 +3,8 @@ use strict;
 use warnings FATAL => 'all';
 use Carp qw( croak );
 
-my $VERSION = '0.30';
+use vars qw($VERSION);
+$VERSION = '0.30';
 
 =head1 NAME
 
@@ -63,8 +64,7 @@ Accessor to debugging flag.
 
 =cut
 
-sub debug
-{
+sub debug {
     my $self = shift;
     return @_ ? $debug = shift : $debug;
 }
@@ -75,8 +75,7 @@ Clear the currently stored debugging information.
 
 =cut
 
-sub clear
-{
+sub clear {
     return @debug = ();
 }
 
@@ -86,8 +85,7 @@ Store debugging information.
 
 =cut
 
-sub store
-{
+sub store {
     return  unless($debug);
 
     my ($self, $id, @args) = @_;
@@ -103,8 +101,7 @@ Retrieve debugging information.
 
 =cut
 
-sub retrieve
-{
+sub retrieve {
     my $self = shift;
     my $id   = shift || 1;
 
@@ -117,8 +114,7 @@ Uses 'on demand' call to Data::Dumper::Dumper().
 
 =cut
 
-sub dumper
-{
+sub dumper {
     my $self = shift;
     my $dump = 'Data::Dumper';
     if(eval { require $dump }) {
@@ -147,13 +143,9 @@ Please see the README file.
 
 =head1 COPYRIGHT AND LICENSE
 
-  Copyright (C) 2004-2007 Barbie for Miss Barbell Productions.
+  Copyright (C) 2004-2010 Barbie for Miss Barbell Productions.
 
   This module is free software; you can redistribute it and/or
-  modify it under the same terms as Perl itself.
-
-The full text of the licenses can be found in the F<Artistic> and
-F<COPYING> files included with this module, or in L<perlartistic> and
-L<perlgpl> in Perl 5.8.1 or later.
+  modify it under the Artistic Licence v2.
 
 =cut
