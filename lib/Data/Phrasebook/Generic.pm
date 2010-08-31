@@ -6,7 +6,7 @@ use base qw( Data::Phrasebook::Debug );
 use Carp qw( croak );
 
 use vars qw($VERSION);
-$VERSION = '0.30';
+$VERSION = '0.31';
 
 =head1 NAME
 
@@ -291,11 +291,20 @@ The example below shows a Template Toolkit style regex.
 
    $q->delimiters( qr{ \[% \s* (\w+) \s* %\] }x );
 
+In addition to the delimiter pattern, an optional setting to suppress missing
+value errors can be passed after the pattern. If set to a true value, will 
+turn any unmatched delimiter patterns to an empty string.
+
 =cut
 
 sub delimiters {
     my $self = shift;
-    return @_ ? $self->{delimiters} = shift : $self->{delimiters};
+    if(@_) {
+        $self->{delimiters} = shift;
+        $self->{blank_args} = shift || 0;
+    }
+        
+    return $self->{delimiters};
 }
 
 1;

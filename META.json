@@ -1,6 +1,6 @@
 {
     "name": "Data::Phrasebook",
-    "version": "0.30",
+    "version": "0.31",
     "abstract": "A collection of modules for accessing phrasebooks from various data sources.",
     "author": ["Barbie <barbie@cpan.org>"],
 
@@ -41,39 +41,39 @@
     "provides": {
         "Data::Phrasebook": {
             "file": "lib/Data/Phrasebook.pm",
-            "version": "0.30"
+            "version": "0.31"
         },
         "Data::Phrasebook::Debug": {
             "file": "lib/Data/Phrasebook/Debug.pm",
-            "version": "0.30"
+            "version": "0.31"
         },
         "Data::Phrasebook::Generic": {
             "file": "lib/Data/Phrasebook/Generic.pm",
-            "version": "0.30"
+            "version": "0.31"
         },
         "Data::Phrasebook::Loader": {
             "file": "lib/Data/Phrasebook/Loader.pm",
-            "version": "0.30"
+            "version": "0.31"
         },
         "Data::Phrasebook::Loader::Base": {
             "file": "lib/Data/Phrasebook/Loader/Base.pm",
-            "version": "0.30"
+            "version": "0.31"
         },
         "Data::Phrasebook::Loader::Text": {
             "file": "lib/Data/Phrasebook/Loader/Text.pm",
-            "version": "0.30"
+            "version": "0.31"
         },
         "Data::Phrasebook::Plain": {
             "file": "lib/Data/Phrasebook/Plain.pm",
-            "version": "0.30"
+            "version": "0.31"
         },
         "Data::Phrasebook::SQL": {
             "file": "lib/Data/Phrasebook/SQL.pm",
-            "version": "0.30"
+            "version": "0.31"
         },
         "Data::Phrasebook::SQL::Query": {
             "file": "lib/Data/Phrasebook/SQL/Query.pm",
-            "version": "0.30"
+            "version": "0.31"
         }
     },
     "no_index": {

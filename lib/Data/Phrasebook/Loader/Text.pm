@@ -6,7 +6,7 @@ use Carp qw( croak );
 use IO::File;
 
 use vars qw($VERSION);
-$VERSION = '0.30';
+$VERSION = '0.31';
 
 =head1 NAME
 

@@ -5,7 +5,7 @@ use base qw( Data::Phrasebook::Generic Data::Phrasebook::Debug );
 use Carp qw( croak );
 
 use vars qw($VERSION);
-$VERSION = '0.30';
+$VERSION = '0.31';
 
 =head1 NAME
 
@@ -77,8 +77,8 @@ sub fetch {
     }
 
     $map =~ s{$delim_RE}[
-         croak "No value given for '$1'" unless defined $args->{$1};
-         $args->{$1};
+        defined $args->{$1} ? $args->{$1}   :
+        $self->{blank_args} ? ''            :  croak "No value given for '$1'";
     ]egx;
 
     return $map;
