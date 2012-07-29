@@ -57,16 +57,8 @@ within the POD documentation, please send an email to barbie@cpan.org or
 submit a bug to the RT system (http://rt.cpan.org/). It would help greatly 
 if you are able to pinpoint problems or even supply a patch. 
 
-Fixes are dependant upon their severity and my availablity. Should a fix not
+Fixes are dependent upon their severity and my availability. Should a fix not
 be forthcoming, please feel free to (politely) remind me.
-
-DSLIP
-
-  b - Beta testing
-  d - Developer
-  p - Perl-only
-  O - Object oriented
-  p - Standard-Perl: user may choose between GPL and Artistic
 
 AUTHOR
 
@@ -77,12 +69,8 @@ http://www.missbarbell.co.uk.
 
 COPYRIGHT AND LICENSE
 
-  Copyright (C) 2004-2010 Barbie for Miss Barbell Productions.
+  Copyright (C) 2004-2012 Barbie for Miss Barbell Productions.
   Copyright (C) 2003 Iain Truskett.
 
-  This module is free software; you can redistribute it and/or 
-  modify it under the same terms as Perl itself.
-
-The full text of the licenses can be found in the Artistic and
-COPYING files included with this module, or in perlartistic and
-perlgpl in Perl 5.8.1 or later.
+  This module is free software; you can redistribute it and/or
+  modify it under the Artistic Licence v2.

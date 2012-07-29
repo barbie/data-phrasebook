@@ -7,7 +7,7 @@ use Carp qw( croak );
 use Module::Pluggable   search_path => ['Data::Phrasebook::Loader'];
 
 use vars qw($VERSION);
-$VERSION = '0.31';
+$VERSION = '0.32';
 
 =head1 NAME
 
@@ -41,8 +41,7 @@ If no class is specified the default class of 'Text' is used.
 
 my $DEFAULT_CLASS = 'Text';
 
-sub new
-{
+sub new {
     my $self  = shift;
     my %args  = @_;
     my $class = delete $args{class} || 'Text';
@@ -62,8 +61,15 @@ sub new
     }
 
     croak("no loader available of that name\n") unless($plugin);
-    eval "CORE::require $plugin";
-    croak "Couldn't require $plugin : $@" if $@;
+
+    eval {
+        (my $file = $plugin) =~ s|::|/|g;
+        require $file . '.pm';
+        $plugin->import();
+        1;
+    } or do {
+        croak "Couldn't require $plugin : $@";
+    };
 
     $self->store(4,"$self->new plugin=[$plugin]")	if($self->debug);
     return $plugin->new( %args );
@@ -98,7 +104,7 @@ Please see the README file.
 =head1 COPYRIGHT AND LICENSE
 
   Copyright (C) 2003 Iain Truskett.
-  Copyright (C) 2004-2010 Barbie for Miss Barbell Productions.
+  Copyright (C) 2004-2012 Barbie for Miss Barbell Productions.
 
   This module is free software; you can redistribute it and/or
   modify it under the Artistic Licence v2.

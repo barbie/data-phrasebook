@@ -5,7 +5,7 @@ use base qw( Data::Phrasebook::Generic Data::Phrasebook::Debug );
 use Carp qw( croak );
 
 use vars qw($VERSION);
-$VERSION = '0.31';
+$VERSION = '0.32';
 
 =head1 NAME
 
@@ -106,7 +106,7 @@ Please see the README file.
 =head1 COPYRIGHT AND LICENSE
 
   Copyright (C) 2003 Iain Truskett.
-  Copyright (C) 2004-2010 Barbie for Miss Barbell Productions.
+  Copyright (C) 2004-2012 Barbie for Miss Barbell Productions.
 
   This module is free software; you can redistribute it and/or
   modify it under the Artistic Licence v2.

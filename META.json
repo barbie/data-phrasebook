@@ -1,7 +1,7 @@
 {
     "name": "Data::Phrasebook",
-    "version": "0.31",
-    "abstract": "A collection of modules for accessing phrasebooks from various data sources.",
+    "version": "0.32",
+    "abstract": "Access your data using the phrasebook design pattern",
     "author": ["Barbie <barbie@cpan.org>"],
 
     "license": "artistic_2",
@@ -13,27 +13,30 @@
     },
     "generated_by": "Hand 1.0",
     "keywords" : [
+        "abstract",
         "data",
         "design pattern",
-        "abstract"
+        "phrasebook"
     ],
 
     "prereqs" : {
         "runtime" : {
             "requires" : {
+                "perl": "5.006",
+                "Carp": "0",
+                "IO::File": "0",
                 "Module::Pluggable": "0"
             }
         },
         "test" : {
             "requires": {
-                "Test::More": "0.47"
+                "Test::More": "0.70"
             },
             "recommends": {
-                "Test::More": "0.70",
+                "Test::CPAN::Meta": "0",
+                "Test::CPAN::Meta::JSON": "0",
                 "Test::Pod": "1.00",
-                "Test::Pod::Coverage": "0.08",
-                "Test::CPAN::Meta": "0.13",
-                "Test::JSON::Meta": "0.08"
+                "Test::Pod::Coverage": "0.08"
             }
         }
     },
@@ -41,39 +44,39 @@
     "provides": {
         "Data::Phrasebook": {
             "file": "lib/Data/Phrasebook.pm",
-            "version": "0.31"
+            "version": "0.32"
         },
         "Data::Phrasebook::Debug": {
             "file": "lib/Data/Phrasebook/Debug.pm",
-            "version": "0.31"
+            "version": "0.32"
         },
         "Data::Phrasebook::Generic": {
             "file": "lib/Data/Phrasebook/Generic.pm",
-            "version": "0.31"
+            "version": "0.32"
         },
         "Data::Phrasebook::Loader": {
             "file": "lib/Data/Phrasebook/Loader.pm",
-            "version": "0.31"
+            "version": "0.32"
         },
         "Data::Phrasebook::Loader::Base": {
             "file": "lib/Data/Phrasebook/Loader/Base.pm",
-            "version": "0.31"
+            "version": "0.32"
         },
         "Data::Phrasebook::Loader::Text": {
             "file": "lib/Data/Phrasebook/Loader/Text.pm",
-            "version": "0.31"
+            "version": "0.32"
         },
         "Data::Phrasebook::Plain": {
             "file": "lib/Data/Phrasebook/Plain.pm",
-            "version": "0.31"
+            "version": "0.32"
         },
         "Data::Phrasebook::SQL": {
             "file": "lib/Data/Phrasebook/SQL.pm",
-            "version": "0.31"
+            "version": "0.32"
         },
         "Data::Phrasebook::SQL::Query": {
             "file": "lib/Data/Phrasebook/SQL/Query.pm",
-            "version": "0.31"
+            "version": "0.32"
         }
     },
     "no_index": {

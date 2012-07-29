@@ -1,11 +1,13 @@
 package BookDB;
 
+use strict;
+use warnings;
+
 my $dbh;
 my $bind = '';
 my $oldq = '';
 
-sub new
-{
+sub new {
 	my $self = shift;
 
 	# create an attributes hash
@@ -129,4 +131,3 @@ DESTROY { }
 END { }
 
 1;
-

@@ -5,15 +5,11 @@ use base qw( Data::Phrasebook::Debug );
 use Carp qw( croak );
 
 use vars qw($VERSION);
-$VERSION = '0.31';
+$VERSION = '0.32';
 
 =head1 NAME
 
 Data::Phrasebook - Abstract your queries!
-
-=head1 ABSTRACT
-
-A collection of modules for accessing phrasebooks from various data sources.
 
 =head1 SYNOPSIS
 
@@ -241,8 +237,8 @@ A subsequent reload will occur with the next fetch call.
 
 =head1 DEDICATION
 
-Much of the work original class framework is from Iain's original code. My
-code was alot simpler and was tied to using just an INI data source. Merging
+Much of the code for the original class framework is from Iain's original code.
+My code was much simpler and was tied to using just an INI data source. Merging
 all the ideas and code together we came up with this distribution.
 
 Unfortunately Iain died in December 2003, so he never got to see or play
@@ -266,14 +262,6 @@ L<Data::Phrasebook::Loader::Base>.
 
 Please see the README file.
 
-=head1 DSLIP
-
-  b - Beta testing
-  d - Developer
-  p - Perl-only
-  O - Object oriented
-  p - Standard-Perl: user may choose between GPL and Artistic
-
 =head1 AUTHOR
 
   Original author: Iain Campbell Truskett (16.07.1979 - 29.12.2003)
@@ -283,7 +271,7 @@ Please see the README file.
 =head1 COPYRIGHT AND LICENSE
 
   Copyright (C) 2003 Iain Truskett.
-  Copyright (C) 2004-2010 Barbie for Miss Barbell Productions.
+  Copyright (C) 2004-2012 Barbie for Miss Barbell Productions.
 
   This module is free software; you can redistribute it and/or
   modify it under the Artistic Licence v2.

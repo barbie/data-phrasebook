@@ -1,3 +1,6 @@
+#!/usr/bin/perl -w
+use strict;
+
 use Test::More;
 
 # Skip if doing a regular install
@@ -7,7 +10,7 @@ plan skip_all => "Author tests not required for installation"
 eval "use Test::JSON::Meta 0.08";
 plan skip_all => "Test::JSON::Meta 0.08 required for testing META.json files" if $@;
 
-plan no_plan;
+plan 'no_plan';
 
 my $meta = meta_spec_ok(undef,undef,@_);
 

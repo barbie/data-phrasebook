@@ -6,7 +6,7 @@ use Carp qw( croak );
 use IO::File;
 
 use vars qw($VERSION);
-$VERSION = '0.31';
+$VERSION = '0.32';
 
 =head1 NAME
 
@@ -154,7 +154,7 @@ sub dicts {
     $path ||= $self->{parent}->file;
     return ()   unless($path && -d $path && -r $path);
 
-    my @files = map { s/$path.//;$_ } grep {/^[^\.]+.txt$/} glob("$path/*");
+    my @files = map { my $x = $_ ; $x =~ s/$path.//; $x } grep {/^[^\.]+.txt$/} glob("$path/*");
     return @files;
 }
 
@@ -185,7 +185,12 @@ used to interrogate the contents of a known dictionary.
 =cut
 
 sub keywords {
-    return sort keys %phrasebook if(@_ == 1);
+    my @keywords;
+
+    if(@_ == 1) {
+        @keywords = sort keys %phrasebook;
+        return @keywords;
+    }
 
     my ($self,$file,$dict) = @_;
     $file ||= $self->{parent}->file;
@@ -195,14 +200,15 @@ sub keywords {
     $file = "$file/$dict"   if(-d $file && defined $dict);
     croak "File [$file] not accessible!" unless -f $file && -r $file;
 
-    my @keywords;
     my $book = IO::File->new($file)    or return;
     while(<$book>) {
         push @keywords, $1   if(/(.*?)=/ && $1);
     }
     $book->close;
 
-    return sort @keywords;
+    my %keywords = map { $_ => 1 } @keywords;
+    @keywords = sort keys %keywords;
+    return @keywords;
 }
 
 1;
@@ -224,7 +230,7 @@ Please see the README file.
 
 =head1 COPYRIGHT AND LICENSE
 
-  Copyright (C) 2004-2010 Barbie for Miss Barbell Productions.
+  Copyright (C) 2004-2012 Barbie for Miss Barbell Productions.
 
   This module is free software; you can redistribute it and/or
   modify it under the Artistic Licence v2.

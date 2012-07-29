@@ -1,5 +1,17 @@
 # Changes log for Data::Phrasebook
 
+0.32    29/07/2012
+        - removed License files from distro.
+        - Artistic License v2 now sole license.
+        - removed DSLIP info.
+        - spelling fixes. (thanks to Nicholas Bamber, Florian Schlichting & 
+          Gregor Herrmann).
+        - added minimum perl version (5.006).
+        - reworked Makefile.PL for clarity.
+        - updated META.yml testing.
+	- added Carp as a prerequisite.
+	- implemented Perl::Critic suggestions.
+
 0.31    31/08/2010
 	- added blank_args as a parameter to delimiters().
 
