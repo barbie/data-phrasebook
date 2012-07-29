@@ -109,6 +109,6 @@ Please see the README file.
   Copyright (C) 2004-2012 Barbie for Miss Barbell Productions.
 
   This module is free software; you can redistribute it and/or
-  modify it under the Artistic Licence v2.
+  modify it under the Artistic License v2.
 
 =cut
