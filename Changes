@@ -1,5 +1,8 @@
 # Changes log for Data::Phrasebook
 
+0.33    29/07/2012
+	- fixed META.json test file.
+
 0.32    29/07/2012
         - removed License files from distro.
         - Artistic License v2 now sole license.

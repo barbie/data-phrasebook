@@ -1,6 +1,6 @@
 {
     "name": "Data::Phrasebook",
-    "version": "0.32",
+    "version": "0.33",
     "abstract": "Access your data using the phrasebook design pattern",
     "author": ["Barbie <barbie@cpan.org>"],
 
@@ -44,39 +44,39 @@
     "provides": {
         "Data::Phrasebook": {
             "file": "lib/Data/Phrasebook.pm",
-            "version": "0.32"
+            "version": "0.33"
         },
         "Data::Phrasebook::Debug": {
             "file": "lib/Data/Phrasebook/Debug.pm",
-            "version": "0.32"
+            "version": "0.33"
         },
         "Data::Phrasebook::Generic": {
             "file": "lib/Data/Phrasebook/Generic.pm",
-            "version": "0.32"
+            "version": "0.33"
         },
         "Data::Phrasebook::Loader": {
             "file": "lib/Data/Phrasebook/Loader.pm",
-            "version": "0.32"
+            "version": "0.33"
         },
         "Data::Phrasebook::Loader::Base": {
             "file": "lib/Data/Phrasebook/Loader/Base.pm",
-            "version": "0.32"
+            "version": "0.33"
         },
         "Data::Phrasebook::Loader::Text": {
             "file": "lib/Data/Phrasebook/Loader/Text.pm",
-            "version": "0.32"
+            "version": "0.33"
         },
         "Data::Phrasebook::Plain": {
             "file": "lib/Data/Phrasebook/Plain.pm",
-            "version": "0.32"
+            "version": "0.33"
         },
         "Data::Phrasebook::SQL": {
             "file": "lib/Data/Phrasebook/SQL.pm",
-            "version": "0.32"
+            "version": "0.33"
         },
         "Data::Phrasebook::SQL::Query": {
             "file": "lib/Data/Phrasebook/SQL/Query.pm",
-            "version": "0.32"
+            "version": "0.33"
         }
     },
     "no_index": {
