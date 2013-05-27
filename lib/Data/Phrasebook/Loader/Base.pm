@@ -97,9 +97,9 @@ Please see the README file.
 
 =head1 COPYRIGHT AND LICENSE
 
-  Copyright (C) 2004-2012 Barbie for Miss Barbell Productions.
+  Copyright (C) 2004-2013 Barbie for Miss Barbell Productions.
 
-  This module is free software; you can redistribute it and/or
+  This distribution is free software; you can redistribute it and/or
   modify it under the Artistic License v2.
 
 =cut

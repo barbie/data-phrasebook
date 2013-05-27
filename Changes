@@ -1,6 +1,7 @@
 # Changes log for Data::Phrasebook
 
         - change file dates changed to meet W3CDTF standards.
+        - clarified licensing text.
 
 0.33    2012-07-29
         - fixed META.json test file.
