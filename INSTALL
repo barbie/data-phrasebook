@@ -6,7 +6,7 @@ The instructions are basically as per any Perl module.
 INSTALLING AUTOMATICALLY
 ------------------------
 
-The easiest way to install is via CPAN or CPANPLUS:
+The easiest way to install is via CPAN, CPANPLUS or cpanminus:
 
 CPAN:
 
@@ -20,8 +20,13 @@ CPANPLUS:
     > i Data::Phrasebook
     > q
 
-See your local 'perldoc CPAN' or 'perldoc CPANPLUS' for
-instructions on setting up and configuring CPAN or CPANPLUS.
+cpanminus:
+
+    % cpanm Data::Phrasebook
+
+See your local documentation ('perldoc CPAN', 'perldoc CPANPLUS' or 
+'perldoc cpanm') for further instructions on setting up and configuring your
+chosen installer.
 
 
 OBTAINING THE MODULE
