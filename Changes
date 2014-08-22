@@ -1,6 +1,7 @@
 Changes log for Data-Phrasebook
 ===============================
 
+0.35    2014-08-22
         - fixed license fields in META.json to be lists.
         - extended test suite.
         - added repository link to META.yml.
